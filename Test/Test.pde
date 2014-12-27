@@ -1,9 +1,9 @@
 import java.util.*;
 import static java.lang.Math.*;
-class Ball {
+class Shape {
   float rad, xpos, ypos;
 
-  Ball(float radius, float startx, float starty) {
+  Shape(float radius, float startx, float starty) {
     rad = radius;
     xpos = startx;
     ypos = starty;
@@ -23,44 +23,40 @@ class Ball {
       ypos += 1;
     }
   }
-  
-  void checkCollision(ArrayList<Ball> otherballs){
-     for (Ball a: otherballs){
-       float distx = a.xpos - xpos;
-       float disty = a.ypos - ypos;
-      if (a.ypos != ypos && a.xpos != xpos && sqrt(distx * distx + disty * disty) < 50){
-       xpos = 0;
-       ypos = 0;
-      } 
-     }
+
+  void checkCollision(ArrayList<Shape> otherballs) {
+    for (Shape a : otherballs) {
+      if (a.ypos != ypos && a.xpos != xpos && sqrt(pow(a.xpos - xpos, 2) + pow(a.ypos - ypos, 2)) < 50) {
+        xpos = 0;
+        ypos = 0;
+      }
+    }
   }
 }
 
 
 
-ArrayList<Ball> balls = new ArrayList<Ball>();
+ArrayList<Shape> balls = new ArrayList<Shape>();
 Random rand = new Random();
 //Ball a = new Ball(25, 55, 55);
 
 void setup() {
   size(1000, 500);
-  noStroke();
+  background(#6BB9F0);
+  drawTerrain();
   frameRate(60);
   for (int i = 0; i < 2; i++) {
-    balls.add(new Ball(25, 25 + rand.nextInt(width - 25), 25));
+    balls.add(new Shape(25, 25 + rand.nextInt(width - 25), 25));
   }
 }
 
 void draw() {
-  background(#8899FF);
-  for (Ball a : balls) {
-    a.correction();
-    a.checkCollision(balls);
-    a.stamp();
-  }
-  System.out.println(balls.get(0).xpos + " " + balls.get(0).ypos);
-  System.out.println(balls.get(1).xpos + " " + balls.get(1).ypos);
-  System.out.println(sqrt(pow(balls.get(0).xpos - balls.get(1).ypos + pow(balls.get(0).xpos - balls.get(1).xpos, 2), 2)));
+  /*
+  for (Shape a : balls) {
+   a.correction();
+   a.checkCollision(balls);
+   a.stamp();
+   }*/
 }
 
 void keyPressed() {
@@ -75,6 +71,20 @@ void keyPressed() {
   }
   if (key == 'd' || key == 'D') {
     balls.get(0).xpos += 5;
+  }
+}
+
+void drawTerrain() {
+  float startx = 0;
+  float starty = height * 3 / 4;
+  float nexty;
+  while (startx < width) {
+    stroke(#2ECC71);
+    line (startx, starty, startx, height);
+    nexty = starty + -3 + rand.nextInt(7);
+    line(startx + 1, nexty, startx, starty);
+    startx += 1;
+    starty = nexty;
   }
 }
 
