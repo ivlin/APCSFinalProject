@@ -1,16 +1,32 @@
 import java.util.*;
 import static java.lang.Math.*;
-class Shape {
+
+abstract class Thing {
   float rad, xpos, ypos;
 
-  Shape(float radius, float startx, float starty) {
+  Thing (float radius, float startx, float starty) {
     rad = radius;
     xpos = startx;
     ypos = starty;
   }
 
+  void fall() {
+    if (ypos + rad <= height) {
+      ypos += 1;
+    }
+  }
+
   void stamp() {
     ellipse(xpos, ypos, 2 * rad, 2 * rad);
+  }
+}
+
+
+class Shape extends Thing {
+int angle;
+  
+  Shape(float radius, float startx, float starty) {
+    super(radius, startx, starty);
   }
 
   void correction() {
@@ -19,9 +35,7 @@ class Shape {
     } else if (xpos + rad > width) {
       xpos = width - rad;
     }    
-    if (ypos + rad <= height) {
-      ypos += 1;
-    }
+    fall();
   }
 
   void checkCollision(ArrayList<Shape> otherballs) {
@@ -32,11 +46,46 @@ class Shape {
       }
     }
   }
+
+  void launch(float xMag, float yMag) {
+    bullets.add(new Bullet(xpos, ypos, xMag, yMag));
+    bullets.get(bullets.size() - 1).id = bullets.size() - 1;
+  }
+  
+  void drawAngle (){
+   
+  }
+}
+
+class Bullet extends Thing {
+  int id;
+  float life, yMag, xMag;
+
+  Bullet (float startx, float starty, float xMagStart, float yMagStart) {
+    super(2, startx, starty);
+    life = 0;
+    xMag = xMagStart;
+    yMag = yMagStart;
+  }
+
+  void fall () {
+    yMag += life * 0.003;
+    ypos += yMag;
+    xpos += xMag;
+    life ++;
+  }
+
+  void correction() {
+    if (xpos < 0 || xpos > width || ypos > height) {
+      bullets.remove(0);
+    }
+  }
 }
 
 
 
 ArrayList<Shape> balls = new ArrayList<Shape>();
+ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 Random rand = new Random();
 //Ball a = new Ball(25, 55, 55);
 
@@ -45,18 +94,24 @@ void setup() {
   background(#6BB9F0);
   drawTerrain();
   frameRate(60);
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 1; i++) {
     balls.add(new Shape(25, 25 + rand.nextInt(width - 25), 25));
   }
 }
 
 void draw() {
-  /*
+  background(#6BB9F0);
   for (Shape a : balls) {
-   a.correction();
-   a.checkCollision(balls);
-   a.stamp();
-   }*/
+    a.correction();
+    a.checkCollision(balls);
+    a.stamp();
+  }
+  for (int i = bullets.size() - 1; i >= 0; i--) {
+    bullets.get(i).fall();
+    bullets.get(i).stamp();
+    bullets.get(i).correction();
+  }
+  System.out.println(bullets.toString());
 }
 
 void keyPressed() {
@@ -72,6 +127,9 @@ void keyPressed() {
   if (key == 'd' || key == 'D') {
     balls.get(0).xpos += 5;
   }
+  if (key == ' ') {
+    balls.get(0).launch(5, -9);
+  }
 }
 
 void drawTerrain() {
@@ -86,5 +144,6 @@ void drawTerrain() {
     startx += 1;
     starty = nexty;
   }
+  stroke(#FFFFFF);
 }
 
