@@ -10,14 +10,21 @@ abstract class Thing {
     ypos = starty;
   }
 
-//things fall while on screen - maybe unnecessary
+  //things fall while on screen - maybe unnecessary
   void fall() {
-    if (ypos + rad <= height) {
+    boolean floating = true;
+    for (Topsoil t : top) {
+      if (t.xpos >= xpos - rad && t.xpos <= xpos + rad) {
+        floating = floating && sqrt(pow(t.xpos - xpos, 2) + pow(t.ypos - ypos, 2)) > rad;
+      }
+    }
+    if (ypos + rad <= height && floating) {
       ypos += 1;
     }
   }
 
   void stamp() {
+    fill(#FFFFFF);
     ellipse(xpos, ypos, 2 * rad, 2 * rad);
   }
 }
@@ -43,9 +50,9 @@ class Shape extends Thing {
 
   //Checks collisions with other objects
   //INCOMPLETE : only resets position, need to think of way to do actual interaction, does not interact with bullets or terrain
-  void checkCollision(ArrayList<Shape> otherballs) {
-    for (Shape a : otherballs) {
-      if (a.ypos != ypos && a.xpos != xpos && sqrt(pow(a.xpos - xpos, 2) + pow(a.ypos - ypos, 2)) < 50) {
+  void checkCollision(ArrayList<Shape> other) {
+    for (Shape a : other) {
+      if (a.ypos != ypos && a.xpos != xpos && sqrt(pow(a.xpos - xpos, 2) + pow(a.ypos - ypos, 2)) < rad + a.rad) {
         xpos = 0;
         ypos = 0;
       }
@@ -56,6 +63,11 @@ class Shape extends Thing {
   void launch(float xMag, float yMag) {
     bullets.add(new Bullet(xpos, ypos, xMag, yMag));
     bullets.get(bullets.size() - 1).id = bullets.size() - 1;
+  }
+  
+  void stamp(){
+   super.stamp();
+//  triangle()
   }
 }
 
@@ -75,8 +87,31 @@ class Bullet extends Thing {
     yMag += life * 0.003;
     ypos += yMag;
     xpos += xMag;
+    checkImpact();
     life ++;
   }
+
+  void checkImpact () {
+    for (Topsoil t : top) {
+      if (t.xpos == xpos && ypos >= t.ypos) {
+        detonate(15);
+      }
+    }
+  }
+
+  void detonate(float rad) {
+    for (Topsoil t : top) {
+      if (t.xpos >= xpos - rad && t.xpos <= xpos + rad) {
+        float temp = sqrt(pow(rad, 2) - pow(t.xpos - xpos, 2));
+        if (sqrt(pow(t.xpos - xpos, 2) + pow(t.ypos - ypos, 2)) < rad) {
+          t.ypos = ypos + temp;
+        } else if (t.ypos <= ypos) {
+          t.ypos += 2 * temp;
+        }
+      }
+    }
+    ypos = height + 10;
+  }  
 
   //Removes bullets from list of bullets after it exits the screen
   void correction() {
@@ -97,11 +132,9 @@ ArrayList<Shape> balls = new ArrayList<Shape>();
 ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 ArrayList<Topsoil> top = new ArrayList<Topsoil>();
 Random rand = new Random();
-//Ball a = new Ball(25, 55, 55);
 
 void setup() {
   size(1000, 500);
-  background(#6BB9F0);
   drawTerrain();
   frameRate(60);
   for (int i = 0; i < 1; i++) {
