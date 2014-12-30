@@ -3,6 +3,7 @@ import static java.lang.Math.*;
 
 abstract class Thing {
   float rad, xpos, ypos;
+  int ang, pow;
 
   Thing (float radius, float startx, float starty) {
     rad = radius;
@@ -12,15 +13,20 @@ abstract class Thing {
 
   //things fall while on screen - maybe unnecessary
   void fall() {
+    boolean floating = isFloating();
+    if (ypos + rad <= height && floating) {
+      ypos += 1;
+    } 
+  }
+
+  boolean isFloating() {
     boolean floating = true;
     for (Topsoil t : top) {
       if (t.xpos >= xpos - rad && t.xpos <= xpos + rad) {
-        floating = floating && sqrt(pow(t.xpos - xpos, 2) + pow(t.ypos - ypos, 2)) > rad;
+        floating = floating && t.ypos > ypos && sqrt(pow(t.xpos - xpos, 2) + pow(t.ypos - ypos, 2)) > rad;
       }
     }
-    if (ypos + rad <= height && floating) {
-      ypos += 1;
-    }
+    return floating;
   }
 
   void stamp() {
@@ -44,14 +50,18 @@ class Shape extends Thing {
       xpos = 0 + rad;
     } else if (xpos + rad > width) {
       xpos = width - rad;
-    }    
+    }
+    //stops the tank from phasing "into" terrain
+    if (top.get((int)xpos).ypos < ypos + rad){
+      ypos = top.get((int)xpos).ypos - rad; 
+    }
     fall();
   }
 
   //Checks collisions with other objects
   //INCOMPLETE : only resets position, need to think of way to do actual interaction, does not interact with bullets or terrain
-  void checkCollision(ArrayList<Shape> other) {
-    for (Shape a : other) {
+  void checkCollision() {
+    for (Shape a : balls) {
       if (a.ypos != ypos && a.xpos != xpos && sqrt(pow(a.xpos - xpos, 2) + pow(a.ypos - ypos, 2)) < rad + a.rad) {
         xpos = 0;
         ypos = 0;
@@ -64,10 +74,10 @@ class Shape extends Thing {
     bullets.add(new Bullet(xpos, ypos, xMag, yMag));
     bullets.get(bullets.size() - 1).id = bullets.size() - 1;
   }
-  
-  void stamp(){
-   super.stamp();
-//  triangle()
+
+  void stamp() {
+    super.stamp();
+    //  triangle()
   }
 }
 
@@ -138,7 +148,7 @@ void setup() {
   drawTerrain();
   frameRate(60);
   for (int i = 0; i < 1; i++) {
-    balls.add(new Shape(25, 25 + rand.nextInt(width - 25), 25));
+    balls.add(new Shape(12, 25 + rand.nextInt(width - 25), 25));
   }
 }
 
@@ -147,7 +157,7 @@ void draw() {
   terrain();
   for (Shape a : balls) {
     a.correction();
-    a.checkCollision(balls);
+    a.checkCollision();
     a.stamp();
   }
   for (int i = bullets.size () - 1; i >= 0; i--) {
@@ -186,7 +196,7 @@ void drawTerrain() {
     stroke(#2ECC71);
     top.add(new Topsoil(startx, starty));
     //  line (startx, starty, startx, height);
-    nexty = starty + -3 + rand.nextInt(7);
+    nexty = starty + -2 + rand.nextInt(5);
     //line(startx + 1, nexty, startx, starty);
     startx += 1;
     starty = nexty;
