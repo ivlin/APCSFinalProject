@@ -37,11 +37,14 @@ abstract class Thing {
 
 //This is the basic "Tank"
 class Shape extends Thing {
-  int ang, pow;
+  int hp, ang, pow, team;
+  String name;
 
-  Shape(float radius, float startx, float starty) {
+  Shape(int team, float radius, float startx, float starty) {
     super(radius, startx, starty);
-    ang = 45;
+    this.team = team;
+    hp = 120;
+    ang = 0;
     pow = 0;
   }
 
@@ -59,28 +62,24 @@ class Shape extends Thing {
     fall();
   }
 
-  //Checks collisions with other objects
-  //INCOMPLETE : only resets position, need to think of way to do actual interaction, does not interact with bullets or terrain
-  void checkCollision() {
-    for (Shape a : balls) {
-      if (a.ypos != ypos && a.xpos != xpos && sqrt(pow(a.xpos - xpos, 2) + pow(a.ypos - ypos, 2)) < rad + a.rad) {
-        xpos = 0;
-        ypos = 0;
-      }
-    }
-  }
-
   //Launches a bullets with an xmagnitude and ymagnitude
   void launch() {
-    float xMag = (float)pow / 10 * cos(ang);
-    float yMag = (float)pow / 10 * -sin(ang);
+    float xMag = (float)pow / 10 * cos(ang * PI / 180);
+    float yMag = (float)pow / 10 * -sin(ang * PI / 180);
     bullets.add(new Bullet(xpos, ypos, xMag, yMag));
     bullets.get(bullets.size() - 1).id = bullets.size() - 1;
   }
 
   void stamp() {
     super.stamp();
-    //  triangle()
+    fill(255 / balls.size() * team);
+    triangle(xpos + (1.25 * rad) * cos(((float)ang - 30) * PI / 180), ypos + -(1.25 * rad) * sin(((float)ang - 30) * PI / 180), 
+    xpos + 1.25 * rad * sin((60 - (float)ang) * PI / 180), ypos + -1.25 * rad * cos((60 - (float)ang) * PI / 180), 
+    xpos + 2.25 * rad * cos((float)ang * PI / 180), ypos + -2.25 * rad * sin((float)ang * PI / 180));
+    fill(#000000);
+    textSize(10);
+    textAlign(CENTER);
+    text(name+ " " + hp + " HP", xpos, ypos + rad + 7);
   }
 }
 
@@ -106,7 +105,7 @@ class Bullet extends Thing {
 
   void checkImpact () {
     for (Topsoil t : top) {
-      if (t.xpos == floor(xpos) && ypos >= t.ypos) {
+      if (t.xpos == floor(xpos) && ypos >= t.ypos || ypos == height) {
         detonate(15);
       }
     }
@@ -115,7 +114,6 @@ class Bullet extends Thing {
   void detonate(float rad) {
     for (Topsoil t : top) {
       if (t.xpos >= xpos - rad && t.xpos <= xpos + rad) {
-        System.out.println("A");
         float temp = sqrt(pow(rad, 2) - pow(t.xpos - xpos, 2));
         if (sqrt(pow(t.xpos - xpos, 2) + pow(t.ypos - ypos, 2)) < rad) {
           t.ypos = ypos + temp;
@@ -124,8 +122,14 @@ class Bullet extends Thing {
         }
       }
     }
+    for (Shape b : balls) {
+      float dist = sqrt(pow(b.xpos - xpos, 2) + pow(b.ypos - ypos, 2));
+      if (dist < b.rad + rad) {
+        b.hp -= 20;
+      }
+    }
     ypos = height + 10;
-  }  
+  }
 
   //Removes bullets from list of bullets after it exits the screen
   void correction() {
@@ -136,7 +140,7 @@ class Bullet extends Thing {
 }
 
 //The "upper" boundary of the ground
-class Topsoil extends Thing {
+class Topsoil extends Thing{
   Topsoil(float startx, float starty) {
     super(.5, startx, starty);
   }
@@ -145,14 +149,15 @@ class Topsoil extends Thing {
 ArrayList<Shape> balls = new ArrayList<Shape>();
 ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 ArrayList<Topsoil> top = new ArrayList<Topsoil>();
+int turn = 0;
 Random rand = new Random();
 
 void setup() {
   size(1000, 500);
   drawTerrain();
   frameRate(60);
-  for (int i = 0; i < 1; i++) {
-    balls.add(new Shape(12, 25 + rand.nextInt(width - 25), 25));
+  for (int i = 0; i < 2; i++) {
+    balls.add(new Shape(i, 12, 25 + rand.nextInt(width - 25), 25));
   }
 }
 
@@ -161,7 +166,6 @@ void draw() {
   terrain();
   for (Shape a : balls) {
     a.correction();
-    a.checkCollision();
     a.stamp();
   }
   for (int i = bullets.size () - 1; i >= 0; i--) {
@@ -173,38 +177,51 @@ void draw() {
 
 void keyPressed() {
   if (key == 'w' || key == 'W') {
-    balls.get(0).ypos -= 5;
+    if (balls.get(turn).ang < 179) {
+      balls.get(turn).ang += 1;
+    }
   }
   if (key == 's' || key == 'S') {
-    balls.get(0).ypos += 5;
+    if (balls.get(turn).ang > -180) {
+      balls.get(turn).ang -= 1;
+    }
   }
   if (key == 'a' || key == 'A') {
-    balls.get(0).xpos -= 5;
+    balls.get(turn).xpos -= 5;
   }
   if (key == 'd' || key == 'D') {
-    balls.get(0).xpos += 5;
+    balls.get(turn).xpos += 5;
   }
   //Pew pew from tank
   if (key == ' ') {
-    if (pow < 120) {
-      balls.get(0).pow ++ ;
+    if (balls.get(turn).pow < 120) {
+      balls.get(turn).pow ++ ;
     }
-    balls.get(0).launch();
+  }
+  if (key == 'x') {
+    if (bullets.size() == 0) {
+      System.out.println(turn);
+      
+        balls.get(turn).launch();
+      if (turn < balls.size() - 1) {
+        turn++;
+      }else{
+        turn = 0;
+      }
+    }
   }
 }
+
 
 //creates the initial terrain
 void drawTerrain() {
   float startx = 0;
   float starty = height * 3 / 4;
   float nexty;
-  System.out.println(width);
   while (startx < width) {
     stroke(#2ECC71);
     top.add(new Topsoil(startx, starty));
-    //  line (startx, starty, startx, height);
     nexty = starty + -2 + rand.nextInt(5);
-    //line(startx + 1, nexty, startx, starty);
     startx += 1;
     starty = nexty;
   }
@@ -219,7 +236,9 @@ void terrain() {
   rect(width - 200, 0, width, 80, 7);
   fill(#000000);
   textSize(15);
-  text("Power " + balls.get(0).pow, width - 195, 15);
+  textAlign(LEFT);
+  text("Power " + balls.get(turn).pow, width - 195, 15);
+  text("Angle " + balls.get(turn).ang, width - 195, 30);
   //updates terrain
   stroke(#2ECC71);
   for (Topsoil t : top) {
