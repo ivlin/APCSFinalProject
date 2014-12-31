@@ -3,7 +3,6 @@ import static java.lang.Math.*;
 
 abstract class Thing {
   float rad, xpos, ypos;
-  int ang, pow;
 
   Thing (float radius, float startx, float starty) {
     rad = radius;
@@ -15,8 +14,8 @@ abstract class Thing {
   void fall() {
     boolean floating = isFloating();
     if (ypos + rad <= height && floating) {
-      ypos += 1;
-    } 
+      ypos += 2;
+    }
   }
 
   boolean isFloating() {
@@ -38,10 +37,12 @@ abstract class Thing {
 
 //This is the basic "Tank"
 class Shape extends Thing {
-  int angle;
+  int ang, pow;
 
   Shape(float radius, float startx, float starty) {
     super(radius, startx, starty);
+    ang = 45;
+    pow = 0;
   }
 
   //Keeps within screen boundaries, applies gravity
@@ -52,8 +53,8 @@ class Shape extends Thing {
       xpos = width - rad;
     }
     //stops the tank from phasing "into" terrain
-    if (top.get((int)xpos).ypos < ypos + rad){
-      ypos = top.get((int)xpos).ypos - rad; 
+    if (top.get((int)xpos).ypos < ypos + rad) {
+      ypos = top.get((int)xpos).ypos - rad;
     }
     fall();
   }
@@ -70,7 +71,9 @@ class Shape extends Thing {
   }
 
   //Launches a bullets with an xmagnitude and ymagnitude
-  void launch(float xMag, float yMag) {
+  void launch() {
+    float xMag = (float)pow / 10 * cos(ang);
+    float yMag = (float)pow / 10 * -sin(ang);
     bullets.add(new Bullet(xpos, ypos, xMag, yMag));
     bullets.get(bullets.size() - 1).id = bullets.size() - 1;
   }
@@ -103,7 +106,7 @@ class Bullet extends Thing {
 
   void checkImpact () {
     for (Topsoil t : top) {
-      if (t.xpos == xpos && ypos >= t.ypos) {
+      if (t.xpos == floor(xpos) && ypos >= t.ypos) {
         detonate(15);
       }
     }
@@ -112,6 +115,7 @@ class Bullet extends Thing {
   void detonate(float rad) {
     for (Topsoil t : top) {
       if (t.xpos >= xpos - rad && t.xpos <= xpos + rad) {
+        System.out.println("A");
         float temp = sqrt(pow(rad, 2) - pow(t.xpos - xpos, 2));
         if (sqrt(pow(t.xpos - xpos, 2) + pow(t.ypos - ypos, 2)) < rad) {
           t.ypos = ypos + temp;
@@ -182,7 +186,10 @@ void keyPressed() {
   }
   //Pew pew from tank
   if (key == ' ') {
-    balls.get(0).launch(5, -9);
+    if (pow < 120) {
+      balls.get(0).pow ++ ;
+    }
+    balls.get(0).launch();
   }
 }
 
@@ -206,10 +213,17 @@ void drawTerrain() {
 
 //updates the terrain
 void terrain() {
+  //status box
+  fill(#777777, 127);
+  stroke(#000000);
+  rect(width - 200, 0, width, 80, 7);
+  fill(#000000);
+  textSize(15);
+  text("Power " + balls.get(0).pow, width - 195, 15);
+  //updates terrain
   stroke(#2ECC71);
   for (Topsoil t : top) {
     line(t.xpos, t.ypos, t.xpos, height);
-  } 
-  stroke(#FFFFFF);
+  }
 }
 
