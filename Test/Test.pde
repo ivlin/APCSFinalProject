@@ -1,242 +1,147 @@
 import java.util.*;
 import static java.lang.Math.*;
 
-abstract class Thing {
-  float rad, xpos, ypos;
-
-  Thing (float radius, float startx, float starty) {
-    rad = radius;
-    xpos = startx;
-    ypos = starty;
-  }
-
-  //things fall while on screen - maybe unnecessary
-  void fall() {
-    boolean floating = isFloating();
-    if (ypos + rad <= height && floating) {
-      ypos += 2;
-    }
-  }
-
-  boolean isFloating() {
-    boolean floating = true;
-    for (Topsoil t : top) {
-      if (t.xpos >= xpos - rad && t.xpos <= xpos + rad) {
-        floating = floating && t.ypos > ypos && getDist(t) > rad;
-      }
-    }
-    return floating;
-  }
-
-  float getDist(Thing other) {
-    return (sqrt(pow(xpos - other.xpos, 2) + pow(ypos - other.ypos, 2)));
-  }
-
-  void stamp() {
-    fill(#FFFFFF);
-    ellipse(xpos, ypos, 2 * rad, 2 * rad);
-  }
-}
-
-
-//This is the basic "Tank"
-class Shape extends Thing {
-  int hp, ang, pow, team, mvt;
-  String name;
-
-  Shape(int team, float radius, float startx, float starty) {
-    super(radius, startx, starty);
-    this.team = team;
-    hp = 120;
-    mvt = 30;
-    ang = 0;
-    pow = 0;
-  }
-
-  //Keeps within screen boundaries, applies gravity
-  void correction() {
-    if (xpos - rad < 0) {
-      xpos = 0 + rad;
-    } else if (xpos + rad > width) {
-      xpos = width - rad;
-    }
-    //stops the tank from phasing "into" terrain
-    if (top.get((int)xpos).ypos < ypos + rad) {
-      ypos = top.get((int)xpos).ypos - rad;
-    }
-    fall();
-  }
-
-  //Launches a bullets with an xmagnitude and ymagnitude
-  void launch() {
-    float xMag = (float)pow / 10 * cos(ang * PI / 180);
-    float yMag = (float)pow / 10 * -sin(ang * PI / 180);
-    bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
-    bullets.get(bullets.size() - 1).id = bullets.size() - 1;
-  }
-
-  void stamp() {
-    super.stamp();
-    fill(255 / balls.size() * team);
-    triangle(xpos + (1.25 * rad) * cos(((float)ang - 30) * PI / 180), ypos + -(1.25 * rad) * sin(((float)ang - 30) * PI / 180), 
-    xpos + 1.25 * rad * sin((60 - (float)ang) * PI / 180), ypos + -1.25 * rad * cos((60 - (float)ang) * PI / 180), 
-    xpos + 2.25 * rad * cos((float)ang * PI / 180), ypos + -2.25 * rad * sin((float)ang * PI / 180));
-    fill(#000000);
-    textSize(10);
-    textAlign(CENTER);
-    text(name+ " " + hp + " HP", xpos, ypos + rad + 7);
-  }
-}
-
-class Bullet extends Thing {
-  int id, team;
-  float life, yMag, xMag;
-
-  Bullet (int team, float startx, float starty, float xMagStart, float yMagStart) {
-    super(2, startx, starty);
-    life = 0;
-    this.team = team;
-    xMag = xMagStart;
-    yMag = yMagStart;
-  }
-
-  //Movement of bullet, complete with vertical and horizontal component and acceleration downwards
-  void fall () {
-    yMag += life * 0.003;
-    ypos += yMag;
-    xpos += xMag;
-    checkImpact();
-    life ++;
-  }
-
-  void checkImpact () {
-    for (Topsoil t : top) {
-      if (t.xpos == floor(xpos) && ypos >= t.ypos || ypos == height) {
-        detonate(15);
-      }
-    }
-    for (Shape b : balls) {
-      if (b.team != team && getDist(b) < b.rad) { 
-        detonate(15);
-      }
-    }
-  }
-
-  void detonate(float rad) {
-    for (Topsoil t : top) {
-      if (t.xpos >= xpos - rad && t.xpos <= xpos + rad) {
-        float temp = sqrt(pow(rad, 2) - pow(t.xpos - xpos, 2));
-        if (getDist(t) < rad) {
-          t.ypos = ypos + temp;
-        } else if (t.ypos <= ypos) {
-          t.ypos += 2 * temp;
-        }
-      }
-    }
-    for (Shape b : balls) {
-      float dist = getDist(b);
-      if (dist < b.rad + rad) {
-        b.hp -= 20;
-      }
-    }
-    ypos = height + 10;
-  }
-
-  //Removes bullets from list of bullets after it exits the screen
-  void correction() {
-    if (xpos < 0 || xpos > width || ypos > height) {
-      bullets.remove(0);
-    }
-  }
-}
-
-//The "upper" boundary of the ground
-class Topsoil extends Thing {
-  Topsoil(float startx, float starty) {
-    super(.5, startx, starty);
-  }
-}
-
-ArrayList<Shape> balls = new ArrayList<Shape>();
+ArrayList<Tank> tanks = new ArrayList<Tank>();
 ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 ArrayList<Topsoil> top = new ArrayList<Topsoil>();
+ArrayList<Button> playerNum = new ArrayList<Button>();
+Button ffa, team, start;
 int turn = 0;
-Shape current;
-
+int players = 0;
+int teams = 1;
+Tank current;
 Random rand = new Random();
+boolean settingUp = true;
 
 void setup() {
   size(1000, 500);
-  drawTerrain();
   frameRate(60);
-  for (int i = 0; i < 2; i++) {
-    balls.add(new Shape(i, 12, 25 + rand.nextInt(width - 25), 25));
+  if (settingUp) {
+    for (int b = 2; b < 11; b++) {
+      playerNum.add(new Button("" + b, (width - 20) / 9 * (b - 2) + 10, 100, (width - 20) / 8.4, (width - 20) / 9));
+    }
+    ffa = new Button("Free for All", 10, 200, (width - 20) / 2, (width - 20) / 9);
+    team = new Button("Team", width / 2, 200, (width - 20) / 2, (width - 20) / 9);
+    start = new Button("start", 10, 300, (width - 20), (width - 20) / 9);
+  } else {
+    drawTerrain();
+    for (int i = 0; i < players; i++) {
+      int t;
+      if (teams == 2) {
+        t = i % 2;
+      } else {
+        t = i;
+      }
+      tanks.add(new Tank(t, 12, 25 + rand.nextInt(width - 25), 25));
+    }
   }
 }
 
+
 void draw() {
-  current = balls.get(turn);
-  terrain();
-  for (Shape a : balls) {
-    a.correction();
-    a.stamp();
-  }
-  for (int i = bullets.size () - 1; i >= 0; i--) {
-    bullets.get(i).fall();
-    bullets.get(i).stamp();
-    bullets.get(i).correction();
+  if (settingUp) {
+    fill(100);
+    rect(10, 10, width - 20, height - 20);
+    for (Button b : playerNum) {
+      b.stamp();
+    }
+ffa.stamp();
+team.stamp();
+start.stamp();
+    if (start.isSelected) {
+      settingUp = false;
+      setup();
+    }
+  } else {
+    current = tanks.get(turn);
+    terrain();
+    for (Tank a : tanks) {
+      a.correction();
+      a.stamp();
+    }
+    for (int i = bullets.size () - 1; i >= 0; i--) {
+      bullets.get(i).fall();
+      bullets.get(i).stamp();
+      bullets.get(i).correction();
+    }
   }
 }
 
 void keyPressed() {
-  if (bullets.size() == 0) {
-    if (key == 'w' || key == 'W') {
-      current.ang += 1;
-      if (current.ang == 360) {
-        current.ang = 0;
-      }
-    }
-    if (key == 's' || key == 'S') {
-      current.ang -= 1;
-      if (current.ang == - 1) {
-        current.ang = 359;
-      }
-    }
-    if (current.mvt > 0 && !current.isFloating()) {
-      if (key == 'a' || key == 'A') {
-        current.xpos -= 3;
-        current.mvt --;
-        if (top.get((int)current.xpos).ypos < current.ypos - 8) {
-          current.xpos += 3;
+  if (settingUp) {
+  } else {
+    if (bullets.size() == 0) {
+      if (key == 'w' || key == 'W') {
+        current.ang += 1;
+        if (current.ang == 360) {
+          current.ang = 0;
         }
       }
-      if (key == 'd' || key == 'D') {
-        current.xpos += 3;
-        current.mvt --;
-        if (top.get((int)current.xpos).ypos < current.ypos - 8) {
+      if (key == 's' || key == 'S') {
+        current.ang -= 1;
+        if (current.ang == - 1) {
+          current.ang = 359;
+        }
+      }
+      if (current.mvt > 0 && !current.isFloating()) {
+        if (key == 'a' || key == 'A') {
           current.xpos -= 3;
+          current.mvt --;
+          if (top.get((int)current.xpos).ypos < current.ypos - 8) {
+            current.xpos += 3;
+          }
+        }
+        if (key == 'd' || key == 'D') {
+          current.xpos += 3;
+          current.mvt --;
+          if (top.get((int)current.xpos).ypos < current.ypos - 8) {
+            current.xpos -= 3;
+          }
         }
       }
-    }
-    //Pew pew from tank
-    if (key == ' ') {
-      current.pow ++;
-      if (current.pow == 121) {
-        current.pow = 0;
+      //Pew pew from tank
+      if (key == ' ') {
+        current.pow ++;
+        if (current.pow == 121) {
+          current.pow = 0;
+        }
       }
-    }
-    if (key == 'x') {
-      current.launch();
-      current.mvt = 25;
-      if (turn < balls.size() - 1) {
-        turn++;
-      } else {
-        turn = 0;
+      if (key == 'x') {
+        current.launch();
+        current.mvt = 25;
+        if (turn < tanks.size() - 1) {
+          turn++;
+        } else {
+          turn = 0;
+        }
       }
     }
   }
 }
 
+void mouseClicked() {
+  for (Button a : playerNum) {
+    a.checkState();
+    if (a.isSelected) {
+      players =  Integer.parseInt(a.id);
+    }
+  }
+  for (Button a :playerNum){
+   if (!("" + players).equals(a.id)){
+    a.isSelected = false; 
+   }
+  }
+ ffa.checkState();
+ team.checkState();
+ if (ffa.isSelected){
+   teams = players;
+   team.isSelected = false;
+ }else if (team.isSelected && players % 2 == 0){
+   teams = 2;
+   ffa.isSelected = false;
+ }
+  start.checkState();
+}
 
 //creates the initial terrain
 void drawTerrain() {
@@ -256,7 +161,7 @@ void drawTerrain() {
 //updates the terrain
 void terrain() {
   background(#6BB9F0);
-  Shape current = balls.get(turn);
+  Tank current = tanks.get(turn);
   //status box
   fill(#777777, 127);
   stroke(#000000);
@@ -267,7 +172,7 @@ void terrain() {
   fill(#000000);
   textSize(15);
   textAlign(LEFT);
-  text("Player " + current.name, width - 175, 15);
+  text("Player " + current.name + " Team " + current.team, width - 175, 15);
   text("Power: " + current.pow, width - 175, 30);
   text("Angle: " + current.ang, width - 90, 30);
   text("Movement Points: " + current.mvt, width - 175, 60);
