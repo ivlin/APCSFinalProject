@@ -9,5 +9,6 @@ Dec 28th - Changed the way terrain works, so they will be objects that can be in
 Dec 29th - Poor interactions betweeen terrain and bullets.
 Dec 30th - Triangles to show angles.
 Jan 1st - Bullets detonate on tanks.
-Jav 2nd - Menu screen added.
-
+Jan 2nd - Menu screen added.
+Jan 6th - created new bullet with a larger  blast radius
+Jan 7th - Fixed bug with buttons not working when selected. fixed bugs in BigBullet.
