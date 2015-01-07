@@ -6,11 +6,11 @@ class BigBullet extends Bullet{
   
   void checkImpack () {
     for (Topsoil t : top) {
-      if (t.xpos == floor(xpos) && ypos >=t.pos || ypos == height) {
+      if (t.xpos == floor(xpos) && ypos >=t.xpos || ypos == height) {
         detonate(25);
       }
     }
-    for (Tanks b : tanks) {
+    for (Tank b : tanks) {
       if (b.team != team && getDist(b) < b.rad){
           detonate(25);
       }
