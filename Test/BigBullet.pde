@@ -38,6 +38,8 @@ class BigBullet extends Bullet{
     }
     ypos = height + 10;
   }
+  
+}
       
       
     
