@@ -45,9 +45,9 @@ void draw() {
     for (Button b : playerNum) {
       b.stamp();
     }
-ffa.stamp();
-team.stamp();
-start.stamp();
+    ffa.stamp();
+    team.stamp();
+    start.stamp();
     if (start.isSelected) {
       settingUp = false;
       setup();
@@ -124,22 +124,24 @@ void mouseClicked() {
     a.checkState();
     if (a.isSelected) {
       players =  Integer.parseInt(a.id);
+      if (("" + players).equals(a.id)){
+       for (Button b :playerNum){
+        if (b != a){
+         b.isSelected = false; 
+        }
+       } 
+      }
     }
   }
-  for (Button a :playerNum){
-   if (!("" + players).equals(a.id)){
-    a.isSelected = false; 
-   }
+  ffa.checkState();
+  team.checkState();
+  if (ffa.isSelected) {
+    teams = players;
+    team.isSelected = false;
+  } else if (team.isSelected && players % 2 == 0) {
+    teams = 2;
+    ffa.isSelected = false;
   }
- ffa.checkState();
- team.checkState();
- if (ffa.isSelected){
-   teams = players;
-   team.isSelected = false;
- }else if (team.isSelected && players % 2 == 0){
-   teams = 2;
-   ffa.isSelected = false;
- }
   start.checkState();
 }
 
