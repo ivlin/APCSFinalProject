@@ -1,4 +1,3 @@
-/*
 class BigBullet extends Bullet{
   
   BigBullet(int team, float startx, float starty, float xMagStart, float yMagStart) {
@@ -41,4 +40,4 @@ class BigBullet extends Bullet{
   }
   
 }
-*/
+
