@@ -12,3 +12,4 @@ Jan 1st - Bullets detonate on tanks.
 Jan 2nd - Menu screen added.
 Jan 6th - created new bullet with a larger  blast radius
 Jan 7th - Fixed bug with buttons not working when selected. fixed bugs in BigBullet.
+Jan 8th - Terrain is drawn differently, so the game should run slightly more smoothly. 
