@@ -12,10 +12,11 @@ int teams = 1;
 Tank current;
 Random rand = new Random();
 boolean settingUp = true;
+int change = 1;
 
 void setup() {
   size(1000, 500);
-  frameRate(60);
+  frameRate(40);
   if (settingUp) {
     for (int b = 2; b < 11; b++) {
       playerNum.add(new Button("" + b, (width - 20) / 9 * (b - 2) + 10, 100, (width - 20) / 8.4, (width - 20) / 9));
@@ -68,8 +69,7 @@ void draw() {
 }
 
 void keyPressed() {
-  if (settingUp) {
-  } else {
+  if (!settingUp) {
     if (bullets.size() == 0) {
       if (key == 'w' || key == 'W') {
         current.ang += 1;
@@ -101,10 +101,10 @@ void keyPressed() {
       }
       //Pew pew from tank
       if (key == ' ') {
-        current.pow ++;
-        if (current.pow == 121) {
-          current.pow = 0;
+        if (current.pow == 121 || current.pow == -1) {
+          change = -change;
         }
+        current.pow += change;
       }
       if (key == 'x') {
         current.launch();
@@ -124,12 +124,12 @@ void mouseClicked() {
     a.checkState();
     if (a.isSelected) {
       players =  Integer.parseInt(a.id);
-      if (("" + players).equals(a.id)){
-       for (Button b :playerNum){
-        if (b != a){
-         b.isSelected = false; 
+      if (("" + players).equals(a.id)) {
+        for (Button b : playerNum) {
+          if (b != a) {
+            b.isSelected = false;
+          }
         }
-       } 
       }
     }
   }
@@ -157,13 +157,11 @@ void drawTerrain() {
     startx += 1;
     starty = nexty;
   }
-  stroke(#FFFFFF);
 }
 
 //updates the terrain
 void terrain() {
   background(#6BB9F0);
-  Tank current = tanks.get(turn);
   //status box
   fill(#777777, 127);
   stroke(#000000);
@@ -178,10 +176,19 @@ void terrain() {
   text("Power: " + current.pow, width - 175, 30);
   text("Angle: " + current.ang, width - 90, 30);
   text("Movement Points: " + current.mvt, width - 175, 60);
+
   //updates terrain
   stroke(#2ECC71);
+  float lowest = top.get(0).ypos;
   for (Topsoil t : top) {
-    line(t.xpos, t.ypos, t.xpos, height);
+    if (t.ypos > lowest) {
+      lowest = t.ypos;
+    }
   }
+  for (Topsoil t : top) {
+    line(t.xpos, t.ypos, t.xpos, lowest);
+  }
+  fill(#2ECC71);
+  rect(0, lowest, width, height - lowest);
 }
 
