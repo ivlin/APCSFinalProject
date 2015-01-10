@@ -4,7 +4,7 @@ import static java.lang.Math.*;
 ArrayList<Tank> tanks = new ArrayList<Tank>();
 ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 ArrayList<Topsoil> top = new ArrayList<Topsoil>();
-ArrayList<Button> playerNum = new ArrayList<Button>();
+ButtonArray playerNums, gameMode;
 Button ffa, team, start;
 int turn = 0;
 int players = 0;
@@ -18,11 +18,13 @@ void setup() {
   size(1000, 500);
   frameRate(40);
   if (settingUp) {
+    playerNums = new ButtonArray(9, 10, 100, width - 20, 100);
+    gameMode = new ButtonArray(2, 10, 200, width - 20, 100);
     for (int b = 2; b < 11; b++) {
-      playerNum.add(new Button("" + b, (width - 20) / 9 * (b - 2) + 10, 100, (width - 20) / 8.4, (width - 20) / 9));
+      playerNums.setButton(b - 2, "" + b);
     }
-    ffa = new Button("Free for All", 10, 200, (width - 20) / 2, (width - 20) / 9);
-    team = new Button("Team", width / 2, 200, (width - 20) / 2, (width - 20) / 9);
+    gameMode.setButton(0, "Free for All");
+    gameMode.setButton(1, "2 Team");
     start = new Button("start", 10, 300, (width - 20), (width - 20) / 9);
   } else {
     drawTerrain();
@@ -43,22 +45,30 @@ void draw() {
   if (settingUp) {
     fill(100);
     rect(10, 10, width - 20, height - 20);
-    for (Button b : playerNum) {
-      b.stamp();
-    }
-    ffa.stamp();
-    team.stamp();
+    //   for (Button b : playerNum) {
+    //      b.stamp();
+    //  }
+    playerNums.stamp();
+    gameMode.stamp();
+    /*  ffa.stamp();
+     team.stamp();
+     */
     start.stamp();
     if (start.isSelected) {
-      settingUp = false;
-      setup();
+        settingUp = false;
+        setup();
     }
   } else {
-    current = tanks.get(turn);
+    current = tanks.get(turn % tanks.size());
     terrain();
-    for (Tank a : tanks) {
-      a.correction();
-      a.stamp();
+    for (int i = tanks.size () - 1; i >= 0; i--) {
+      Tank a = tanks.get(i);
+      if (a.hp <= 0) {
+        tanks.remove(i);
+      } else {
+        a.correction();
+        a.stamp();
+      }
     }
     for (int i = bullets.size () - 1; i >= 0; i--) {
       bullets.get(i).fall();
@@ -109,39 +119,21 @@ void keyPressed() {
       if (key == 'x') {
         current.launch();
         current.mvt = 25;
-        if (turn < tanks.size() - 1) {
-          turn++;
-        } else {
-          turn = 0;
-        }
+        turn++;
       }
     }
   }
 }
 
 void mouseClicked() {
-  for (Button a : playerNum) {
-    a.checkState();
-    if (a.isSelected) {
-      players =  Integer.parseInt(a.id);
-      if (("" + players).equals(a.id)) {
-        for (Button b : playerNum) {
-          if (b != a) {
-            b.isSelected = false;
-          }
-        }
-      }
-    }
-  }
-  ffa.checkState();
-  team.checkState();
-  if (ffa.isSelected) {
-    teams = players;
-    team.isSelected = false;
-  } else if (team.isSelected && players % 2 == 0) {
+  playerNums.checkState();
+  players = Integer.parseInt(playerNums.getSelection());
+  if (gameMode.getSelection().equals("2 Team")) {
     teams = 2;
-    ffa.isSelected = false;
+  } else {
+    teams = players;
   }
+  gameMode.checkState();
   start.checkState();
 }
 

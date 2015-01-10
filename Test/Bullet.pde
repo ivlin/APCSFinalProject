@@ -20,7 +20,7 @@ class Bullet extends Thing {
   }
 
   void checkImpact () {
-    if (top.get((int)xpos).ypos <= ypos){
+    if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos){
      detonate(15); 
     }
     for (Tank b : tanks) {
