@@ -34,9 +34,9 @@ class ButtonArray {
     }
   }
 
-  void stamp() {
+  void stamp(float r, float g, float b, float a) {
     for (int i = 0; i < array.length; i++) {
-      array[i].stamp();
+      array[i].stamp(r, g, b, a);
     }
   }
 

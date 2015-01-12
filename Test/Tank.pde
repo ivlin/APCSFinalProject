@@ -1,6 +1,6 @@
 //This is the basic "Tank"
 class Tank extends Thing {
-  int hp, ang, pow, team, mvt;
+  int hp, ang, pow, team, mvt, bulletSelected;
   String name;
 
   Tank(int team, float radius, float startx, float starty) {
@@ -30,7 +30,18 @@ class Tank extends Thing {
   void launch() {
     float xMag = (float)pow / 10 * cos(ang * PI / 180);
     float yMag = (float)pow / 10 * -sin(ang * PI / 180);
-    bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
+    switch (bulletSelected) {
+    case 1:
+      bullets.add(new BigBullet(team, xpos, ypos, xMag, yMag));
+      break;
+    case 2:
+      bullets.add(new RollingBullet(team, xpos, ypos, xMag, yMag));
+      break;
+    default:
+      bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
+      break;
+    }
+ //   bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
     bullets.get(bullets.size() - 1).id = bullets.size() - 1;
   }
 
@@ -46,3 +57,4 @@ class Tank extends Thing {
     text(name+ " " + hp + " HP", xpos, ypos + rad + 7);
   }
 }
+

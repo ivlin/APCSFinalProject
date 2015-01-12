@@ -4,7 +4,7 @@ import static java.lang.Math.*;
 ArrayList<Tank> tanks = new ArrayList<Tank>();
 ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 ArrayList<Topsoil> top = new ArrayList<Topsoil>();
-ButtonArray playerNums, gameMode;
+ButtonArray playerNums, gameMode, bulletType;
 Button ffa, team, start;
 int turn = 0;
 int players = 0;
@@ -28,14 +28,17 @@ void setup() {
     start = new Button("start", 10, 300, (width - 20), (width - 20) / 9);
   } else {
     drawTerrain();
+    bulletType = new ButtonArray(10, 0, 0, width - 185, 55);
+    //Make the bulletType buttons
+    for (int x = 0; x < bulletType.array.length; x ++) {
+      bulletType.setButton(x, "");
+    }
+    bulletType.setButton(0, "Bullet");
+    bulletType.setButton(1, "Big\nBullet");
+    bulletType.setButton(2, "Rolling\nBullet");
+    //
     for (int i = 0; i < players; i++) {
-      int t;
-      if (teams == 2) {
-        t = i % 2;
-      } else {
-        t = i;
-      }
-      tanks.add(new Tank(t, 12, 25 + rand.nextInt(width - 25), 25));
+      tanks.add(new Tank(i % teams, 12, 25 + rand.nextInt(width - 25), 25));
     }
   }
 }
@@ -45,18 +48,12 @@ void draw() {
   if (settingUp) {
     fill(100);
     rect(10, 10, width - 20, height - 20);
-    //   for (Button b : playerNum) {
-    //      b.stamp();
-    //  }
-    playerNums.stamp();
-    gameMode.stamp();
-    /*  ffa.stamp();
-     team.stamp();
-     */
-    start.stamp();
+    playerNums.stamp(200, 200, 200, 255);
+    gameMode.stamp(200, 200, 200, 255);
+    start.stamp(200, 200, 200, 255);
     if (start.isSelected) {
-        settingUp = false;
-        setup();
+      settingUp = false;
+      setup();
     }
   } else {
     current = tanks.get(turn % tanks.size());
@@ -126,15 +123,20 @@ void keyPressed() {
 }
 
 void mouseClicked() {
-  playerNums.checkState();
-  players = Integer.parseInt(playerNums.getSelection());
-  if (gameMode.getSelection().equals("2 Team")) {
-    teams = 2;
+  if (settingUp) {
+    playerNums.checkState();
+    players = Integer.parseInt(playerNums.getSelection());
+    if (gameMode.getSelection().equals("2 Team")) {
+      teams = 2;
+    } else {
+      teams = players;
+    }
+    gameMode.checkState();
+    start.checkState();
   } else {
-    teams = players;
+    bulletType.checkState(); 
+    current.bulletSelected = bulletType.selection;
   }
-  gameMode.checkState();
-  start.checkState();
 }
 
 //creates the initial terrain
@@ -168,9 +170,10 @@ void terrain() {
   text("Power: " + current.pow, width - 175, 30);
   text("Angle: " + current.ang, width - 90, 30);
   text("Movement Points: " + current.mvt, width - 175, 60);
-
   //updates terrain
   stroke(#2ECC71);
+  bulletType.selection = current.bulletSelected;
+  bulletType.stamp(0, 0, 0, 64);
   float lowest = top.get(0).ypos;
   for (Topsoil t : top) {
     if (t.ypos > lowest) {

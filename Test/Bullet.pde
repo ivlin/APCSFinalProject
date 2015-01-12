@@ -20,12 +20,12 @@ class Bullet extends Thing {
   }
 
   void checkImpact () {
-    if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos){
-     detonate(15); 
+    if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos) {
+      detonate(15);
     }
     for (Tank b : tanks) {
-      if (b.team != team && getDist(b) < b.rad){
-          detonate(25);
+      if (b.team != team && getDist(b) < b.rad) {
+        detonate(25);
       }
     }
   }
@@ -35,7 +35,7 @@ class Bullet extends Thing {
     Topsoil t;
     for (int x = (int)(xpos - rad); x < (int)(xpos + rad); x++) {
       t= top.get(x);
-      if (t.xpos >= xpos - rad && t.xpos <= xpos + rad) {
+      if (t.xpos > xpos - rad && t.xpos < xpos + rad) {
         temp = sqrt(pow(rad, 2) - pow(t.xpos - xpos, 2));
         if (getDist(t) < rad) {
           t.ypos = ypos + temp;
@@ -61,3 +61,4 @@ class Bullet extends Thing {
     }
   }
 }
+

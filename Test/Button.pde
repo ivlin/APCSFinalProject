@@ -1,7 +1,7 @@
 class Button {
   String id;
   float xpos, ypos, xlen, ylen;
-  boolean isValid, isSelected;
+  boolean isSelected;
 
   Button(String id, float x, float y, float w, float h) {
     this.id = id;
@@ -9,16 +9,14 @@ class Button {
     ypos = y;
     xlen = w;
     ylen = h;
-    isValid = true;
     isSelected = false;
   }
 
-  void stamp() {
-    if (isValid);
+  void stamp(float r, float g, float b, float a) {
     if (isSelected) {
-      fill(#FF4444);
+      fill(#FF4444, a);
     } else {
-      fill(200);
+      fill(r, g, b, a);
     }
     rect(xpos, ypos, xlen, ylen);
     textAlign(CENTER);
