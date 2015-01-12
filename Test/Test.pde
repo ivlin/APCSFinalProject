@@ -56,7 +56,7 @@ void draw() {
       setup();
     }
   } else {
-    current = tanks.get(turn % tanks.size());
+    current = tanks.get(turn);
     terrain();
     for (int i = tanks.size () - 1; i >= 0; i--) {
       Tank a = tanks.get(i);
@@ -117,6 +117,9 @@ void keyPressed() {
         current.launch();
         current.mvt = 25;
         turn++;
+        if (turn >= tanks.size()) {
+          turn = 0;
+        }
       }
     }
   }
@@ -174,16 +177,28 @@ void terrain() {
   stroke(#2ECC71);
   bulletType.selection = current.bulletSelected;
   bulletType.stamp(0, 0, 0, 64);
-  float lowest = top.get(0).ypos;
+  float lowestOne = top.get(0).ypos;
+  float lowestTwo = top.get(int(top.size() / 2)).ypos;
   for (Topsoil t : top) {
-    if (t.ypos > lowest) {
-      lowest = t.ypos;
+    if (t.xpos < width / 2) {
+      if (t.ypos > lowestOne) {
+        lowestOne = t.ypos;
+      }
+    } else {
+      if (t.ypos > lowestTwo) {
+        lowestTwo = t.ypos;
+      }
     }
   }
   for (Topsoil t : top) {
-    line(t.xpos, t.ypos, t.xpos, lowest);
+    if (t.xpos < top.size() / 2) {
+      line(t.xpos, t.ypos, t.xpos, lowestOne);
+    } else {
+      line(t.xpos, t.ypos, t.xpos, lowestTwo);
+    }
   }
   fill(#2ECC71);
-  rect(0, lowest, width, height - lowest);
+  rect(0, lowestOne, width / 2, height - lowestOne);
+  rect(width / 2, lowestTwo, width / 2, height - lowestTwo);
 }
 
