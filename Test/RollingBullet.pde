@@ -1,12 +1,20 @@
 class RollingBullet extends Bullet {
   float dist = 1000000;
+  int mvt, dir;
    
   RollingBullet (int team, float startx, float starty, float xMagStart, float yMagStart) {
     super(team,startx,starty,xMagStart,yMagStart);
+    mvt = 10;
     }
 
   void setDist (Tank other) {
     dist = getDist(other);
+    if (getCloseTank().xpos > xpos) {
+      dir = 1;
+    }
+    else {
+      dir = -1;
+    }
   }
   
   float getDistance () {
@@ -14,13 +22,14 @@ class RollingBullet extends Bullet {
   }
   
   Tank getCloseTank () {
-    Tank x;
+    Tank x = tank.get(0);
     for (Tank b : tanks) {
       if (getDist(b) < dist){
        x = b;
       }
-      return x;
     }
+    return x;
+  }
     
 
   void checkImpact () {
@@ -40,11 +49,20 @@ class RollingBullet extends Bullet {
 
   void roll () {
     yMag = 0;
-    for (Topsoil t : top) {
+   /* for (Topsoil t : top) {
       if (xpos == t.xpos && ypos > t.ypos - 1) {
         ypos = t.ypos - 1;  
          }
       } 
+      */
+    if (top.get((int)xpos).ypos < ypos + rad) {
+       ypos = top.get((int)xpos).ypos - rad;    
+    }
+    // Obi add the movement and direction stuff info in Test KeyPressed() and Tank correction()
+    
+    
+    
+    
   }
  
   }
