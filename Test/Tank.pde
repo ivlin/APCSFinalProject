@@ -37,6 +37,9 @@ class Tank extends Thing {
     case 2:
       bullets.add(new RollingBullet(team, xpos, ypos, xMag, yMag));
       break;
+      case 4:
+      bullets.add(new TeleportBullet(team,xpos,ypos,xMag,yMag));
+      break;
     default:
       bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
       break;
