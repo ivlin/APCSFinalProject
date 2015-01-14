@@ -37,7 +37,7 @@ void setup() {
     bulletType.setButton(1, "Big\nBullet");
     bulletType.setButton(2, "Rolling\nBullet");
     bulletType.setButton(3, "Fountain\nBullet");
-    bulletType.setButton(4, "Telport\nBullet");
+    bulletType.setButton(4, "Teleport\nBullet");
     //
     for (int i = 0; i < players; i++) {
       tanks.add(new Tank(i % teams, 12, 25 + rand.nextInt(width - 25), 25));
