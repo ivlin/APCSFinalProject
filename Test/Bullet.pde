@@ -32,7 +32,7 @@ class Bullet extends Thing {
 
   void detonate(float rad) {
     float temp;
-    Topsoil t;
+    Thing t;
     for (int x = (int)(xpos - rad); x < (int)(xpos + rad); x++) {
       t= top.get(x);
       if (t.xpos > xpos - rad && t.xpos < xpos + rad) {

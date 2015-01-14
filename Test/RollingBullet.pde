@@ -32,7 +32,7 @@ class RollingBullet extends Bullet {
 
 
   void checkImpact () {
-    for (Topsoil t : top) {
+    for (Thing t : top) {
       if (t.xpos == floor(xpos) && ypos >= t.ypos +1) {
         setDist(getCloseTank());     
         roll();
@@ -48,7 +48,7 @@ class RollingBullet extends Bullet {
 
   void roll () {
     yMag = 0;
-    /* for (Topsoil t : top) {
+    /* for (Thing t : top) {
      if (xpos == t.xpos && ypos > t.ypos - 1) {
      ypos = t.ypos - 1;  
      }

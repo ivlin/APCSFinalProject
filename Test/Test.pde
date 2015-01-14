@@ -3,7 +3,7 @@ import static java.lang.Math.*;
 
 ArrayList<Tank> tanks = new ArrayList<Tank>();
 ArrayList<Bullet> bullets = new ArrayList<Bullet>();
-ArrayList<Topsoil> top = new ArrayList<Topsoil>();
+ArrayList<Thing> top = new ArrayList<Thing>();
 ButtonArray playerNums, gameMode, bulletType;
 Button ffa, team, start;
 int turn = 0;
@@ -36,6 +36,7 @@ void setup() {
     bulletType.setButton(0, "Bullet");
     bulletType.setButton(1, "Big\nBullet");
     bulletType.setButton(2, "Rolling\nBullet");
+    bulletType.setButton(3, "Fountain\nBullet");
     bulletType.setButton(4, "Telport\nBullet");
     //
     for (int i = 0; i < players; i++) {
@@ -150,7 +151,7 @@ void drawTerrain() {
   float nexty;
   while (startx < width) {
     stroke(#2ECC71);
-    top.add(new Topsoil(startx, starty));
+    top.add(new Thing(0.5, startx, starty));
     nexty = starty + -2 + rand.nextInt(5);
     startx += 1;
     starty = nexty;
@@ -180,7 +181,7 @@ void terrain() {
   bulletType.stamp(0, 0, 0, 64);
   float lowestOne = top.get(0).ypos;
   float lowestTwo = top.get(int(top.size() / 2)).ypos;
-  for (Topsoil t : top) {
+  for (Thing t : top) {
     if (t.xpos < width / 2) {
       if (t.ypos > lowestOne) {
         lowestOne = t.ypos;
@@ -191,7 +192,7 @@ void terrain() {
       }
     }
   }
-  for (Topsoil t : top) {
+  for (Thing t : top) {
     if (t.xpos < top.size() / 2) {
       line(t.xpos, t.ypos, t.xpos, lowestOne);
     } else {

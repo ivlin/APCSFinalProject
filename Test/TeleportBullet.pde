@@ -3,7 +3,7 @@ class TeleportBullet extends Bullet {
    TeleportBullet (int team, float startx, float starty, float xMagStart, float yMagStart) {
      super(team,startx,starty,xMagStart,yMagStart);
    }
-   
+   /*
    void teleport () {
      if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos) {
          current.xpos = t.xpos;
@@ -16,6 +16,6 @@ class TeleportBullet extends Bullet {
       }
      }
    }
-   
+   */
    
 }

@@ -1,4 +1,4 @@
-abstract class Thing {
+class Thing {
   float rad, xpos, ypos;
 
   Thing (float radius, float startx, float starty) {
@@ -17,7 +17,7 @@ abstract class Thing {
 
   boolean isFloating() {
     boolean floating = true;
-    for (Topsoil t : top) {
+    for (Thing t : top) {
       if (t.xpos >= xpos - rad && t.xpos <= xpos + rad) {
         floating = floating && t.ypos > ypos && getDist(t) > rad;
       }

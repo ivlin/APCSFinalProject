@@ -37,14 +37,17 @@ class Tank extends Thing {
     case 2:
       bullets.add(new RollingBullet(team, xpos, ypos, xMag, yMag));
       break;
-      case 4:
-      bullets.add(new TeleportBullet(team,xpos,ypos,xMag,yMag));
+    case 3:
+      bullets.add(new FountainBullet(team, xpos, ypos, xMag, yMag));
+      break;
+    case 4:
+      bullets.add(new TeleportBullet(team, xpos, ypos, xMag, yMag));
       break;
     default:
       bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
       break;
     }
- //   bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
+    //   bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
     bullets.get(bullets.size() - 1).id = bullets.size() - 1;
   }
 

@@ -5,7 +5,7 @@ class BigBullet extends Bullet{
   }
   
   void checkImpack () {
-    for (Topsoil t : top) {
+    for (Thing t : top) {
       if (t.xpos == floor(xpos) && ypos >=t.xpos || ypos == height) {
         detonate(25);
       }
@@ -18,8 +18,9 @@ class BigBullet extends Bullet{
   }
         
   void detonate(float rad) {
+    System.out.println("Big");
     float temp;
-    for (Topsoil t : top) {
+    for (Thing t : top) {
       if (t.xpos >= xpos - rad && t.xpos <= xpos + rad) {
         temp = sqrt(pow(rad, 2) - pow(t.xpos - xpos, 2));
         if (getDist(t) < rad) {
