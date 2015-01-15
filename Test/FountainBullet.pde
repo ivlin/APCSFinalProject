@@ -16,8 +16,9 @@ class FountainBullet extends Bullet {
   }
 
   void detonate (int rad) {
+    super.detonate(10);
     for (int i = 0; i < 3; i++) {
-      bullets.add(new Bullet(team, xpos, ypos - 2, -2 + rand.nextInt(5), -1));
+      bullets.add(new Bullet(team, xpos, ypos - 2, -1 + (rand.nextFloat() * 2.0), -2 * rand.nextFloat()));
     }
     ypos = height + 1;
   }

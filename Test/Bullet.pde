@@ -22,10 +22,12 @@ class Bullet extends Thing {
   void checkImpact () {
     if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos) {
       detonate(15);
+      ypos = height + 1;
     }
     for (Tank b : tanks) {
       if (b.team != team && getDist(b) < b.rad) {
-        detonate(25);
+        detonate(15);
+        ypos = height + 1;
       }
     }
   }
@@ -33,13 +35,13 @@ class Bullet extends Thing {
   void detonate(float rad) {
     float temp;
     Thing t;
-    for (int x = (int)(xpos - rad); x < (int)(xpos + rad); x++) {
+    for (int x = (int)(xpos - rad); x < (int)(xpos + rad) && x <= width && x >= 0; x++) {
       t= top.get(x);
       if (t.xpos > xpos - rad && t.xpos < xpos + rad) {
         temp = sqrt(pow(rad, 2) - pow(t.xpos - xpos, 2));
         if (getDist(t) < rad) {
           t.ypos = ypos + temp;
-        } else if (t.ypos <= ypos) {
+        } else if (t.ypos < ypos) {
           t.ypos += 2 * temp;
         }
       }
@@ -51,7 +53,6 @@ class Bullet extends Thing {
         b.hp -= 20;
       }
     }
-    ypos = height + 10;
   }
 
   //Removes bullets from list of bullets after it exits the screen
