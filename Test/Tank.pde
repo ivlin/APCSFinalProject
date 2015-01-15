@@ -46,6 +46,9 @@ class Tank extends Thing {
     default:
       bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
       break;
+    case 5:
+      bullets.add(new ScatterBullet(team,xpos, ypos, xMag, yMag));
+      break;
     }
     //   bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
     bullets.get(bullets.size() - 1).id = bullets.size() - 1;
