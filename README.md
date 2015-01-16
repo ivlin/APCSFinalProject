@@ -17,3 +17,4 @@ Jan 9th - More minor changes to make the code run more smoothly.<br>
 Jan 10th - Made the ButtonArray class to simplify test code.<br>
 Jan 11th - Game now allows for the player to select a bullet type. TO BE FIXED: Last shot fired is not remembered for each player.<br>
 Jan 15th - Fountain bullet now detonates correctly. <br>
+Jan 16th - Fixed bug where multiple bullets would detonate midair. Fixed bugs in TeleportBullet, RollingBullet, and finished ScatterBullet.<br>
