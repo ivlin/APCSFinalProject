@@ -46,10 +46,9 @@ class Bullet extends Thing {
         }
       }
     }
-    float dist;
     for (Tank b : tanks) {
-      dist = getDist(b);
-      if (dist < b.rad + rad) {
+      temp = getDist(b);
+      if (temp < b.rad + rad) {
         b.hp -= 20;
       }
     }
@@ -58,7 +57,13 @@ class Bullet extends Thing {
   //Removes bullets from list of bullets after it exits the screen
   void correction() {
     if (xpos < 0 || xpos > width || ypos > height) {
-      bullets.remove(0);
+      int x = 0;
+      for (int i = bullets.size () - 1; i >= 0; i--) {
+        if (bullets.get(i).xpos == xpos && bullets.get(i).ypos == ypos){
+          x = i;
+        }
+      }
+      bullets.remove(x);
     }
   }
 }
