@@ -11,6 +11,7 @@ class ScatterBullet extends Bullet {
       for (float i = 0; i > -.80; i-= .25) {
         bullets.add(new Bullet(team, xpos, ypos, xMag+i, yMag));
       }
+      ypos = height + 1;
     }
  
 
@@ -18,7 +19,7 @@ class ScatterBullet extends Bullet {
 
 
   void checkImpact () {
-    if (yMag > 0 && yMag < .10){
+    if (yMag > 0 && yMag < .15){
       scatter();
     }
     if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos) {

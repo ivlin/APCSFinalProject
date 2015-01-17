@@ -39,6 +39,7 @@ void setup() {
     bulletType.setButton(3, "Fountain\nBullet");
     bulletType.setButton(4, "Teleport\nBullet");
     bulletType.setButton(5, "Scatter\nBullet");
+    bulletType.setButton(6, "Rolling\nFountain\nBullet");
     //
     for (int i = 0; i < players; i++) {
       int l = rand.nextInt(width);

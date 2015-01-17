@@ -49,8 +49,11 @@ class Tank extends Thing {
     case 5:
       bullets.add(new ScatterBullet(team,xpos, ypos, xMag, yMag));
       break;
+    case 6:
+      bullets.add(new RollingFountainBullet(team,xpos,ypos,xMag,yMag));
+      break;
     }
-    //   bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
+      //   bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
     bullets.get(bullets.size() - 1).id = bullets.size() - 1;
   }
 
