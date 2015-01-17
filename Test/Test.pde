@@ -41,7 +41,8 @@ void setup() {
     bulletType.setButton(5, "Scatter\nBullet");
     //
     for (int i = 0; i < players; i++) {
-      tanks.add(new Tank(i % teams, 12, 25 + rand.nextInt(width - 25), 25));
+      int l = rand.nextInt(width);
+      tanks.add(new Tank(i % teams, 12, l, top.get(l).ypos - 50));
     }
   }
 }
@@ -180,28 +181,19 @@ void terrain() {
   stroke(#2ECC71);
   bulletType.selection = current.bulletSelected;
   bulletType.stamp(0, 0, 0, 64);
-  float lowestOne = top.get(0).ypos;
-  float lowestTwo = top.get(int(top.size() / 2)).ypos;
-  for (Thing t : top) {
-    if (t.xpos < width / 2) {
-      if (t.ypos > lowestOne) {
-        lowestOne = t.ypos;
-      }
-    } else {
-      if (t.ypos > lowestTwo) {
-        lowestTwo = t.ypos;
+  float[]lowest = new float[4];
+  for (int i = 0; i < lowest.length; i++) {
+    lowest[i] = top.get(width / 4 * i).ypos;
+    for (int x = i * width / 4; x < width / 4 * (i + 1); x++) {
+      if (top.get(x).ypos > lowest[i]) {
+        lowest[i] = top.get(x).ypos;
       }
     }
-  }
-  for (Thing t : top) {
-    if (t.xpos < top.size() / 2) {
-      line(t.xpos, t.ypos, t.xpos, lowestOne);
-    } else {
-      line(t.xpos, t.ypos, t.xpos, lowestTwo);
+    fill(#2ECC71);
+    rect(i * width / 4, lowest[i], width / 4, height - lowest[i]);
+    for (int x = i * width / 4; x < width / 4 * (i + 1); x++) {
+      line(top.get(x).xpos, top.get(x).ypos, top.get(x).xpos, lowest[i]);
     }
   }
-  fill(#2ECC71);
-  rect(0, lowestOne, width / 2, height - lowestOne);
-  rect(width / 2, lowestTwo, width / 2, height - lowestTwo);
 }
 

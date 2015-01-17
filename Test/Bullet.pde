@@ -1,10 +1,11 @@
 class Bullet extends Thing {
-  int id, team;
+  int team, dmg;
   float life, yMag, xMag;
 
   Bullet (int team, float startx, float starty, float xMagStart, float yMagStart) {
     super(2, startx, starty);
     life = 0;
+    dmg = 15;
     this.team = team;
     xMag = xMagStart;
     yMag = yMagStart;
@@ -35,7 +36,7 @@ class Bullet extends Thing {
   void detonate(float rad) {
     float temp;
     Thing t;
-    for (int x = (int)(xpos - rad); x < (int)(xpos + rad) && x <= width && x >= 0; x++) {
+    for (int x = (int)(xpos - rad); x < (int)(xpos + rad) && x < width && x >= 0; x++) {
       t= top.get(x);
       if (t.xpos > xpos - rad && t.xpos < xpos + rad) {
         temp = sqrt(pow(rad, 2) - pow(t.xpos - xpos, 2));
@@ -49,7 +50,7 @@ class Bullet extends Thing {
     for (Tank b : tanks) {
       temp = getDist(b);
       if (temp < b.rad + rad) {
-        b.hp -= 20;
+        b.hp -= dmg;
       }
     }
   }
