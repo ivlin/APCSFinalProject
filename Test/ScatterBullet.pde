@@ -15,16 +15,15 @@ class ScatterBullet extends Bullet {
     }
  
 
-
-
-
   void checkImpact () {
     if (yMag > 0 && yMag < .15){
       scatter();
+      ypos = height + 1;
     }
     if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos) {
+      if (ypos < height){
       detonate(15);
-      ypos = height + 10;
+      }
     }
     for (Tank b : tanks) {
       if (b.team != team && getDist(b) < b.rad) {

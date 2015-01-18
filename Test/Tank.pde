@@ -65,6 +65,9 @@ class Tank extends Thing {
     case 7:
       bullets.add(new DiggerBullet(team, xpos, ypos, xMag, yMag));
       break;
+    case 8:
+      bullets.add(new HealthBullet(team, xpos, ypos, xMag, yMag));
+      break;  
     default:
       bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
       break;
