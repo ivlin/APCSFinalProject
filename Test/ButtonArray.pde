@@ -12,6 +12,7 @@ class ButtonArray {
     for (int i = 0; i < array.length; i++) {
       array[i] = new Button(null, x + w / size * i, y, w / size, h);
     }
+    array[0].isSelected = true;
   }
 
   void setButton(int i, String newId) {
@@ -24,11 +25,6 @@ class ButtonArray {
         array[i].checkState();
         if (array[i].isSelected) {
           selection = i;
-          for (int n = 0; n < array.length; n++) {
-            if (n != i) {
-              array[n].isSelected = false;
-            }
-          }
         }
       }
     }

@@ -126,6 +126,12 @@ void keyPressed() {
         if (turn >= tanks.size()) {
           turn = 0;
         }
+        for (int i = 0; i < bulletType.array.length; i++){
+         bulletType.array[i].isSelected = false; 
+        }
+   //     bulletType.checkState();
+        bulletType.selection = tanks.get(turn).bulletSelected;
+        bulletType.array[bulletType.selection].isSelected = true;
       }
     }
   }
@@ -143,7 +149,7 @@ void mouseClicked() {
     gameMode.checkState();
     start.checkState();
   } else {
-    bulletType.checkState(); 
+    bulletType.checkState();
     current.bulletSelected = bulletType.selection;
   }
 }
@@ -169,7 +175,7 @@ void terrain() {
   fill(#777777, 127);
   stroke(#000000);
   rect(width - 180, 0, 175, 65, 7);
-  rect(width - 175, 35, 165, 10);
+  //  rect(width - 30, 65, 25, 25, 7);
   fill(#FF0000, 200);
   rect(width - 174, 35, current.pow * 163 / 120, 10);
   fill(#000000);
@@ -181,8 +187,9 @@ void terrain() {
   text("Movement Points: " + current.mvt, width - 175, 60);
   //updates terrain
   stroke(#2ECC71);
-  bulletType.selection = current.bulletSelected;
+  
   bulletType.stamp(0, 0, 0, 64);
+
   float[]lowest = new float[4];
   for (int i = 0; i < lowest.length; i++) {
     lowest[i] = top.get(width / 4 * i).ypos;

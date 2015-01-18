@@ -25,9 +25,13 @@ class Button {
   }
 
   void checkState() {
+    isSelected = mouseX > xpos && mouseX < xpos + xlen && mouseY > ypos && mouseY < ypos + ylen;
+    /*
     if (mouseX > xpos && mouseX < xpos + xlen && mouseY > ypos && mouseY < ypos + ylen) {
-      isSelected = !isSelected;
-    }
+      isSelected = true;
+    }else{
+      isSelected = false;
+    }*/
   }
 }
 

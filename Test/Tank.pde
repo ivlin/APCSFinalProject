@@ -10,6 +10,7 @@ class Tank extends Thing {
     mvt = 110;
     ang = 0;
     pow = 0;
+    bulletSelected = 0; 
   }
 
   //Keeps within screen boundaries, applies gravity
