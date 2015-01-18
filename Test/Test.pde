@@ -40,6 +40,7 @@ void setup() {
     bulletType.setButton(4, "Teleport\nBullet");
     bulletType.setButton(5, "Scatter\nBullet");
     bulletType.setButton(6, "Rolling\nFountain\nBullet");
+    bulletType.setButton(7, "Digger\nBullet");
     //
     for (int i = 0; i < players; i++) {
       int l = rand.nextInt(width);

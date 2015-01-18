@@ -1,12 +1,12 @@
 class RollingFountainBullet extends Bullet {
   float dist = 1000000;
   int mvt, dir;
-  
+
   RollingFountainBullet (int team, float startx, float starty, float xMagStart, float yMagStart) {
     super(team, startx, starty, xMagStart, yMagStart);
     mvt = 8;
   }
-  
+
   void setDist (Tank other) {
     dist = getDist(other);
     if (getCloseTank().xpos > xpos) {
@@ -15,11 +15,11 @@ class RollingFountainBullet extends Bullet {
       dir = -1;
     }
   }
-  
+
   float getDistance () {
     return dist;
   }
-  
+
   Tank getCloseTank () {
     Tank x = tanks.get(0);
     for (Tank b : tanks) {
@@ -29,9 +29,11 @@ class RollingFountainBullet extends Bullet {
     }
     return x;
   }
-  
+
   void checkImpact () {
-    for (Thing t : top) {
+    Thing t;
+    if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos) {
+      t = top.get((int)xpos);
       if (t.xpos == floor(xpos) && ypos >= t.ypos +1) {
         setDist(getCloseTank());     
         roll();
@@ -43,9 +45,8 @@ class RollingFountainBullet extends Bullet {
         ypos = height + 1;
       }
     }
-    
   }
-  
+
   void roll () {
     yMag = 0;
     if (top.get((int)xpos).ypos < ypos + rad) {
@@ -65,7 +66,7 @@ class RollingFountainBullet extends Bullet {
       ypos = height +1;
     }
   }
-  
+
   void detonate (int rad) {
     super.detonate(10);
     for (int i = 0; i < 3; i++) {
@@ -73,7 +74,5 @@ class RollingFountainBullet extends Bullet {
     }
     ypos = height + 1;
   }
-
 }
-
 

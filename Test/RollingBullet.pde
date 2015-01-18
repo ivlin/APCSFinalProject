@@ -32,7 +32,9 @@ class RollingBullet extends Bullet {
 
 
   void checkImpact () {
-    for (Thing t : top) {
+    Thing t;
+    if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos) {
+      t = top.get((int)xpos);
       if (t.xpos == floor(xpos) && ypos >= t.ypos +1) {
         setDist(getCloseTank());     
         roll();
