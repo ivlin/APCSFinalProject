@@ -1,6 +1,7 @@
 //This is the basic "Tank"
 class Tank extends Thing {
   int hp, ang, pow, team, mvt, bulletSelected;
+  int[]inv;
   String name;
 
   Tank(int team, float radius, float startx, float starty) {
@@ -10,7 +11,15 @@ class Tank extends Thing {
     mvt = 110;
     ang = 0;
     pow = 0;
-    bulletSelected = 0; 
+    bulletSelected = 0;
+    inv = new int[bulletType.array.length];
+    inv[1] = 20;
+    inv[2] = 5;
+    inv[3] = 5;
+    inv[4] = 2;
+    inv[5] = 5;
+    inv[6] = 3;
+    inv[7] = 10;
   }
 
   //Keeps within screen boundaries, applies gravity
@@ -31,6 +40,9 @@ class Tank extends Thing {
   void launch() {
     float xMag = (float)pow / 10 * cos(ang * PI / 180);
     float yMag = (float)pow / 10 * -sin(ang * PI / 180);
+    if (inv[bulletSelected] <= 0) {
+      bulletSelected = 0;
+    } 
     switch (bulletSelected) {
     case 1:
       bullets.add(new BigBullet(team, xpos, ypos, xMag, yMag));
@@ -52,11 +64,12 @@ class Tank extends Thing {
       break;
     case 7:
       bullets.add(new DiggerBullet(team, xpos, ypos, xMag, yMag));
- break;
+      break;
     default:
       bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
       break;
     }
+    inv[bulletSelected] --;
     //   bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
   }
 

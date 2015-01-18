@@ -114,7 +114,7 @@ void keyPressed() {
       }
       //Pew pew from tank
       if (key == ' ') {
-        if (current.pow == 121 || current.pow == -1) {
+        if (current.pow == 120 || current.pow == -1) {
           change = -change;
         }
         current.pow += change;
@@ -126,10 +126,9 @@ void keyPressed() {
         if (turn >= tanks.size()) {
           turn = 0;
         }
-        for (int i = 0; i < bulletType.array.length; i++){
-         bulletType.array[i].isSelected = false; 
+        for (int i = 0; i < bulletType.array.length; i++) {
+          bulletType.array[i].isSelected = false;
         }
-   //     bulletType.checkState();
         bulletType.selection = tanks.get(turn).bulletSelected;
         bulletType.array[bulletType.selection].isSelected = true;
       }
@@ -179,7 +178,7 @@ void terrain() {
   fill(#FF0000, 200);
   rect(width - 174, 35, current.pow * 163 / 120, 10);
   fill(#000000);
-  textSize(15);
+  textSize(13);
   textAlign(LEFT);
   text("Player " + current.name + " Team " + current.team, width - 175, 15);
   text("Power: " + current.pow, width - 175, 30);
@@ -187,9 +186,12 @@ void terrain() {
   text("Movement Points: " + current.mvt, width - 175, 60);
   //updates terrain
   stroke(#2ECC71);
-  
   bulletType.stamp(0, 0, 0, 64);
-
+  fill(#000000);
+  textAlign(CENTER);
+  for (int i = 1; i < bulletType.array.length; i++) {
+    text(current.inv[i], bulletType.array[i].xpos + bulletType.array[i].xlen / 2, 14);
+  } 
   float[]lowest = new float[4];
   for (int i = 0; i < lowest.length; i++) {
     lowest[i] = top.get(width / 4 * i).ypos;
