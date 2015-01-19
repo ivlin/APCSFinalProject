@@ -36,6 +36,10 @@ class ButtonArray {
     }
   }
 
+  int size() {
+    return array.length;
+  }
+
   String getSelection() {
     return array[selection].id;
   }
