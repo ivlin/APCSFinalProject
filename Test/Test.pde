@@ -10,7 +10,8 @@ int turn, players, teams, windDirection, newWind;
 Tank current;
 Random rand = new Random();
 boolean settingUp = true;
-boolean popupVis = false;
+boolean popupOneVis = false;
+boolean popupTwoVis = false;
 int change = 1;
 
 void setup() {
@@ -48,12 +49,11 @@ void setup() {
     bulletType.setButton(6, "Rolling\nFountain");
     bulletType.setButton(7, "Digger\nBullet");
     bulletType.setButton(8, "Health\nBullet");
-      popup = new Button("Change Name", width - 25, 66, 20, 20);
-
     //
     for (int i = 0; i < players; i++) {
       int l = rand.nextInt(width);
       tanks.add(new Tank(i % teams, 12, l, top.get(l).ypos - 50));
+      tanks.get(i).name = "Player " + i;
     }
   }
 }
@@ -74,79 +74,86 @@ void draw() {
       setup();
     }
   } else if (!settingUp) {
+    checkVictory();
     current = tanks.get(turn);
     terrain();
-    for (int i = tanks.size () - 1; i >= 0; i--) {
-      Tank a = tanks.get(i);
-      if (a.hp <= 0) {
-        tanks.remove(i);
-      } else {
-        a.correction();
-        a.stamp();
+    if (!popupOneVis) {
+      for (int i = tanks.size () - 1; i >= 0; i--) {
+        Tank a = tanks.get(i);
+        if (a.hp <= 0) {
+          tanks.remove(i);
+        } else {
+          a.correction();
+          a.stamp();
+        }
       }
-    }
-    for (int i = bullets.size () - 1; i >= 0; i--) {
-      bullets.get(i).fall();
-      bullets.get(i).stamp();
-      bullets.get(i).correction();
+      for (int i = bullets.size () - 1; i >= 0; i--) {
+        bullets.get(i).fall();
+        bullets.get(i).stamp();
+        bullets.get(i).correction();
+      }
     }
   }
 }
 
 void keyPressed() {
   if (!settingUp) {
-    if (bullets.size() == 0) {
-      if (key == 'w' || key == 'W') {
-        current.ang += 1;
-        if (current.ang == 360) {
-          current.ang = 0;
-        }
-      }
-      if (key == 's' || key == 'S') {
-        current.ang -= 1;
-        if (current.ang == - 1) {
-          current.ang = 359;
-        }
-      }
-      if (current.mvt > 0 && !current.isFloating()) {
-        if (key == 'a' || key == 'A') {
-          current.xpos -= 3;
-          current.mvt --;
-          if (top.get((int)current.xpos).ypos < current.ypos - 8) {
-            current.xpos += 3;
+    if (popupOneVis) {
+      current.name += key;
+    } else {
+      if (bullets.size() == 0) {
+        if (key == 'w' || key == 'W') {
+          current.ang += 1;
+          if (current.ang == 360) {
+            current.ang = 0;
           }
         }
-        if (key == 'd' || key == 'D') {
-          current.xpos += 3;
-          current.mvt --;
-          if (top.get((int)current.xpos).ypos < current.ypos - 8) {
+        if (key == 's' || key == 'S') {
+          current.ang -= 1;
+          if (current.ang == - 1) {
+            current.ang = 359;
+          }
+        }
+        if (current.mvt > 0 && !current.isFloating()) {
+          if (key == 'a' || key == 'A') {
             current.xpos -= 3;
+            current.mvt --;
+            if (top.get((int)current.xpos).ypos < current.ypos - 8) {
+              current.xpos += 3;
+            }
+          }
+          if (key == 'd' || key == 'D') {
+            current.xpos += 3;
+            current.mvt --;
+            if (top.get((int)current.xpos).ypos < current.ypos - 8) {
+              current.xpos -= 3;
+            }
           }
         }
-      }
-      //Pew pew from tank
-      if (key == ' ') {
-        if (current.pow == 120 || current.pow == -1) {
-          change = -change;
+        //Pew pew from tank
+        if (key == ' ') {
+          if (current.pow == 120 || current.pow == -1) {
+            change = -change;
+          }
+          current.pow += change;
         }
-        current.pow += change;
-      }
-      if (key == 'x') {
-        current.launch();
-        current.mvt = 25;
-        turn++;
-        if (turn == 1) {
-          windDirection = newWind;
+        if (key == 'x') {
+          current.launch();
+          current.mvt = 25;
+          turn++;
+          if (turn == 1) {
+            windDirection = newWind;
+          }
+          if (turn >= tanks.size()) {
+            turn = 0;
+            newWind = -9 + rand.nextInt(19);
+          }
+          for (int i = 0; i < bulletType.size (); i++) {
+            bulletType.array[i].isSelected = false;
+          }
+          bulletType.selection = tanks.get(turn).bulletSelected;
+          bulletType.array[bulletType.selection].isSelected = true;
         }
-        if (turn >= tanks.size()) {
-          turn = 0;
-          newWind = -9 + rand.nextInt(19);
-        }
-        for (int i = 0; i < bulletType.size (); i++) {
-          bulletType.array[i].isSelected = false;
-        }
-        bulletType.selection = tanks.get(turn).bulletSelected;
-        bulletType.array[bulletType.selection].isSelected = true;
       }
     }
   }
@@ -166,8 +173,28 @@ void mouseClicked() {
     wind.checkState();
     start.checkState();
   } else {
+    if (popupOneVis) {
+      if (mouseX > width / 2 - 80 && mouseX < width / 2 + 80 && mouseY > height / 2 + 50 && mouseY < height / 2 + 100) {
+        current.name = "";
+      }
+    }
     bulletType.checkState();
     current.bulletSelected = bulletType.selection;
+    if (mouseX > width - 25 && mouseY > 66 && mouseX <  width - 5 && mouseY < 86) {
+      popupOneVis = !popupOneVis;
+    }
+  }
+}
+
+
+void checkVictory() {
+  int team = tanks.get(0).team;
+  boolean n = true;
+  for (Tank t : tanks) {
+    n = n & (t.team == team);
+  }
+  if (n) {
+    popupTwoVis = true;
   }
 }
 
@@ -192,6 +219,10 @@ void terrain() {
   fill(#777777, 127);
   stroke(#000000);
   rect(width - 180, 0, 175, 65, 7);
+  if (popupOneVis) {
+    fill(#222222, 50);
+  }
+  rect(width - 25, 66, 20, 20, 3);
   fill(#FF0000, 200);
   rect(width - 174, 35, current.pow * 163 / 120, 10);
   fill(#000000);
@@ -202,14 +233,9 @@ void terrain() {
   text("Angle: " + current.ang, width - 90, 30);
   text("Movement Points: " + current.mvt, width - 175, 60);
   text("Wind:" + newWind, width / 2, 80);
-  if (popupVis) {
-    rect(40, 40, width - 80, height - 80);
-  }
   //updates terrain
   stroke(#2ECC71);
   bulletType.stamp(0, 0, 0, 64);
-    popup.stamp(0,0,0,64);
-
   fill(#000000);
   textAlign(CENTER);
   for (int i = 1; i < bulletType.size (); i++) {
@@ -228,6 +254,28 @@ void terrain() {
     for (int x = i * width / 4; x < width / 4 * (i + 1); x++) {
       line(top.get(x).xpos, top.get(x).ypos, top.get(x).xpos, lowest[i]);
     }
+  }
+  fill(#777777);
+  if (popupOneVis) {
+    textSize(25);
+    rect(200, 100, width - 400, height - 200);
+    fill(#FFFFFF);
+    rect(width / 2 - 80, height / 2 + 50, 160, 50);
+    rect (210, height / 2 - 30, width - 420, 50);
+    fill(#000000);
+    text("Type to add to the end of the the name", width / 2, height / 2 - 50);
+    text(current.name, width / 2, height / 2);
+    text("Clear Name", width / 2, height / 2 + 80);
+  } else if (popupTwoVis) {
+    rect(40, 40, width - 80, height - 80);
+    fill(#000000);
+    textAlign(CENTER);
+    textSize(24);
+    String message = "GAME OVER\nThe winners are:";
+    for (Tank t : tanks) {
+      message += "\n" + t.name;
+    }
+    text(message, width / 2, 100);
   }
 }
 
