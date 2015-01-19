@@ -51,7 +51,7 @@ void setup() {
     bulletType.setButton(8, "Health\nBullet");
     //
     for (int i = 0; i < players; i++) {
-      int l = rand.nextInt(width);
+      int l = 10 + rand.nextInt(width - 20);
       tanks.add(new Tank(i % teams, 12, l, top.get(l).ypos - 50));
       tanks.get(i).name = "Player " + i;
     }
@@ -75,7 +75,7 @@ void draw() {
     }
   } else if (!settingUp) {
     checkVictory();
-    current = tanks.get(turn);
+    current = tanks.get(turn % tanks.size());
     terrain();
     if (!popupOneVis) {
       for (int i = tanks.size () - 1; i >= 0; i--) {
@@ -233,6 +233,8 @@ void terrain() {
   text("Angle: " + current.ang, width - 90, 30);
   text("Movement Points: " + current.mvt, width - 175, 60);
   text("Wind:" + newWind, width / 2, 80);
+  textAlign(RIGHT);
+  text("Name change:", width - 26, 80);
   //updates terrain
   stroke(#2ECC71);
   bulletType.stamp(0, 0, 0, 64);

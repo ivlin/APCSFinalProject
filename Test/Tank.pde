@@ -1,17 +1,20 @@
 //This is the basic "Tank"
 class Tank extends Thing {
-  int hp, ang, pow, team, mvt, bulletSelected;
+  int hp, ang, pow, team, mvt, bulletSelected, r, g, b;
   int[]inv;
   String name;
 
   Tank(int team, float radius, float startx, float starty) {
     super(radius, startx, starty);
     this.team = team;
-    hp = 120;
-    mvt = 110;
+    hp = 200;
+    mvt = 40;
     ang = 90;
     pow = 0;
     bulletSelected = 0;
+    r = rand.nextInt(256);
+    g = rand.nextInt(256);
+    b = rand.nextInt(256);
     inv = new int[bulletType.size()];
     inv[1] = 20;
     inv[2] = 5;
@@ -77,8 +80,12 @@ class Tank extends Thing {
   }
 
   void stamp() {
+    if (gameMode.selection == 0) {
+      fill(r, g, b);
+    }else{
+     fill((255 + team) % 256, (256 - team) % 256, 128);
+    }
     super.stamp();
-    fill(255 / tanks.size() * team);
     triangle(xpos + (1.25 * rad) * cos(((float)ang - 30) * PI / 180), ypos + -(1.25 * rad) * sin(((float)ang - 30) * PI / 180), 
     xpos + 1.25 * rad * sin((60 - (float)ang) * PI / 180), ypos + -1.25 * rad * cos((60 - (float)ang) * PI / 180), 
     xpos + 2.25 * rad * cos((float)ang * PI / 180), ypos + -2.25 * rad * sin((float)ang * PI / 180));
