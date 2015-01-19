@@ -40,9 +40,16 @@ class RollingFountainBullet extends Bullet {
       }
     }
     for (Tank b : tanks) {
-      if (b.team != team && getDist(b) < b.rad) { 
-        detonate(15);
-        ypos = height + 1;
+      if (ff.selection == 0) {
+        if (getDist(b) < b.rad) {
+          detonate(15);
+          ypos = height + 1;
+        }
+      } else {
+        if (b.team != team && getDist(b) < b.rad) {
+          detonate(15);
+          ypos = height + 1;
+        }
       }
     }
   }
@@ -75,4 +82,3 @@ class RollingFountainBullet extends Bullet {
     ypos = height + 1;
   }
 }
-

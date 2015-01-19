@@ -1,9 +1,9 @@
-class HealthBullet extends Bullet{
-  
+class HealthBullet extends Bullet {
+
   HealthBullet (int team, float startx, float starty, float xMagStart, float yMagStart) {
-    super(team,startx,starty,xMagStart,yMagStart);
+    super(team, startx, starty, xMagStart, yMagStart);
   }
-  
+
   void checkImpact () {
     if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos) {
       detonate(0);
@@ -17,5 +17,5 @@ class HealthBullet extends Bullet{
       }
     }
   }
-  
 }
+

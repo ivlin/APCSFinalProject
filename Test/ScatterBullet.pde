@@ -5,34 +5,21 @@ class ScatterBullet extends Bullet {
   }
 
   void scatter () {
-      for (float i = 0; i < .80; i+=.25) {
-        bullets.add(new Bullet(team, xpos, ypos, xMag+i, yMag));
-      }
-      for (float i = 0; i > -.80; i-= .25) {
-        bullets.add(new Bullet(team, xpos, ypos, xMag+i, yMag));
-      }
-      ypos = height + 1;
+    for (float i = 0; i < .80; i+=.25) {
+      bullets.add(new Bullet(team, xpos, ypos, xMag+i, yMag));
     }
- 
+    for (float i = 0; i > -.80; i-= .25) {
+      bullets.add(new Bullet(team, xpos, ypos, xMag+i, yMag));
+    }
+    ypos = height + 1;
+  }
+
 
   void checkImpact () {
-    if (yMag > 0 && yMag < .15){
+    super.checkImpact();
+    if (yMag > 0 && yMag < .15) {
       scatter();
       ypos = height + 1;
     }
-    if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos) {
-      if (ypos < height){
-      detonate(15);
-      }
-    }
-    for (Tank b : tanks) {
-      if (b.team != team && getDist(b) < b.rad) {
-        detonate(25);
-        ypos = height + 10;
-      }
-    }
   }
 }
-
-
-
