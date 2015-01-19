@@ -22,3 +22,4 @@ Jan 15th - Fountain bullet now detonates correctly. <br>
 Jan 16th - Fixed bug where multiple bullets would detonate midair. Fixed bugs in TeleportBullet, RollingBullet, and finished ScatterBullet.<br>
 Jan 17th - Added new bullet - the DiggerBullet<br>
 Jan 18th - There are now limited supplies of every bullet except for the regular bullet.<br>
+Jan 19th - Friendly fire, wind added. Popup screens to allow name change and end the game also added.<br>

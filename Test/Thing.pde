@@ -30,7 +30,6 @@ class Thing {
   }
 
   void stamp() {
-    fill(#FFFFFF);
     ellipse(xpos, ypos, 2 * rad, 2 * rad);
   }
 }
