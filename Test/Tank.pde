@@ -9,10 +9,10 @@ class Tank extends Thing {
     this.team = team;
     hp = 120;
     mvt = 110;
-    ang = 0;
+    ang = 90;
     pow = 0;
     bulletSelected = 0;
-    inv = new int[bulletType.array.length];
+    inv = new int[bulletType.size()];
     inv[1] = 20;
     inv[2] = 5;
     inv[3] = 5;
@@ -20,6 +20,7 @@ class Tank extends Thing {
     inv[5] = 5;
     inv[6] = 3;
     inv[7] = 10;
+    inv[8] = 3;
   }
 
   //Keeps within screen boundaries, applies gravity
@@ -42,38 +43,37 @@ class Tank extends Thing {
     float yMag = (float)pow / 10 * -sin(ang * PI / 180);
     if (inv[bulletSelected] <= 0) {
       bulletSelected = 0;
-    } 
+    }
     switch (bulletSelected) {
     case 1:
-      bullets.add(new BigBullet(team, xpos, ypos, xMag, yMag));
+      bullets.add(new BigBullet(team, xpos + rad * cos(ang * PI / 180), ypos + rad * -sin(ang * PI / 180), xMag, yMag));
       break;
     case 2:
-      bullets.add(new RollingBullet(team, xpos, ypos, xMag, yMag));
+      bullets.add(new RollingBullet(team, xpos + rad * cos(ang * PI / 180), ypos + rad * -sin(ang * PI / 180), xMag, yMag));
       break;
     case 3:
-      bullets.add(new FountainBullet(team, xpos, ypos, xMag, yMag));
+      bullets.add(new FountainBullet(team, xpos + rad * cos(ang * PI / 180), ypos + rad * -sin(ang * PI / 180), xMag, yMag));
       break;
     case 4:
-      bullets.add(new TeleportBullet(team, xpos, ypos, xMag, yMag));
+      bullets.add(new TeleportBullet(team, xpos + rad * cos(ang * PI / 180), ypos + rad * -sin(ang * PI / 180), xMag, yMag));
       break;
     case 5:
-      bullets.add(new ScatterBullet(team, xpos, ypos, xMag, yMag));
+      bullets.add(new ScatterBullet(team, xpos + rad * cos(ang * PI / 180), ypos + rad * -sin(ang * PI / 180), xMag, yMag));
       break;
     case 6:
-      bullets.add(new RollingFountainBullet(team, xpos, ypos, xMag, yMag));
+      bullets.add(new RollingFountainBullet(team, xpos + rad * cos(ang * PI / 180), ypos + rad * -sin(ang * PI / 180), xMag, yMag));
       break;
     case 7:
-      bullets.add(new DiggerBullet(team, xpos, ypos, xMag, yMag));
+      bullets.add(new DiggerBullet(team, xpos + rad * cos(ang * PI / 180), ypos + rad * -sin(ang * PI / 180), xMag, yMag));
       break;
     case 8:
-      bullets.add(new HealthBullet(team, xpos, ypos, xMag, yMag));
+      bullets.add(new HealthBullet(team, xpos + rad * cos(ang * PI / 180), ypos + rad * -sin(ang * PI / 180), xMag, yMag));
       break;  
     default:
-      bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
+      bullets.add(new Bullet(team, xpos + rad * cos(ang * PI / 180), ypos + rad * -sin(ang * PI / 180), xMag, yMag));
       break;
     }
     inv[bulletSelected] --;
-    //   bullets.add(new Bullet(team, xpos, ypos, xMag, yMag));
   }
 
   void stamp() {

@@ -16,6 +16,9 @@ class Bullet extends Thing {
     yMag += life * 0.003;
     ypos += yMag;
     xpos += xMag;
+    if (wind.selection == 0) {
+      xpos += (float)windDirection / 4;
+    }
     checkImpact();
     life ++;
   }
@@ -26,9 +29,16 @@ class Bullet extends Thing {
       ypos = height + 1;
     }
     for (Tank b : tanks) {
-      if (b.team != team && getDist(b) < b.rad) {
-        detonate(15);
-        ypos = height + 1;
+      if (ff.selection == 0) {
+        if (getDist(b) < b.rad) {
+          detonate(15);
+          ypos = height + 1;
+        }
+      } else {
+        if (b.team != team && getDist(b) < b.rad) {
+          detonate(15);
+          ypos = height + 1;
+        }
       }
     }
   }
@@ -60,7 +70,7 @@ class Bullet extends Thing {
     if (xpos < 0 || xpos > width || ypos > height) {
       int x = 0;
       for (int i = bullets.size () - 1; i >= 0; i--) {
-        if (bullets.get(i).xpos == xpos && bullets.get(i).ypos == ypos){
+        if (bullets.get(i).xpos == xpos && bullets.get(i).ypos == ypos) {
           x = i;
         }
       }
