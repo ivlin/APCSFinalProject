@@ -4,7 +4,7 @@ class FountainBullet extends Bullet {
     super(team, startx, starty, xMagStart, yMagStart);
   }
 
- /* void checkImpact () {
+  void checkImpact () {
     if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos) {
       detonate(15);
     }
@@ -14,7 +14,7 @@ class FountainBullet extends Bullet {
       }
     }
   }
-*/
+
   void detonate (int rad) {
     super.detonate(10);
     for (int i = 0; i < 3; i++) {
