@@ -1,6 +1,15 @@
 class MineBullet extends Bullet{
   
-    void checkImpact () {
+  MineBullet (int team, float startx, float starty, float xMagStart, float yMagStart) {
+    super(team, startx, starty, xMagStart, yMagStart);
+  }  
+  
+  
+  
+   
+   
+   
+   void checkImpact () {
     if (xpos <= width && xpos >= 0 && top.get((int)xpos).ypos <= ypos) {
       ypos += .0005 ;
     }
