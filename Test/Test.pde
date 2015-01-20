@@ -50,6 +50,7 @@ void setup() {
     bulletType.setButton(6, "Rolling\nFountain");
     bulletType.setButton(7, "Digger\nBullet");
     bulletType.setButton(8, "Health\nBullet");
+    bulletType.setButton(9, "Mine\nBullet");
     //
     for (int i = 0; i < players; i++) {
       int l = 10 + rand.nextInt(width - 20);

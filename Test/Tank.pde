@@ -71,6 +71,9 @@ class Tank extends Thing {
       break;
     case 8:
       bullets.add(new HealthBullet(team, xpos + rad * cos(ang * PI / 180), ypos + rad * -sin(ang * PI / 180), xMag, yMag));
+      break;
+    case 9:
+      bullets.add(new MineBullet(team, xpos + rad * cos(ang * PI / 180), ypos + rad * -sin(ang * PI / 180), xMag, yMag));
       break;  
     default:
       bullets.add(new Bullet(team, xpos + rad * cos(ang * PI / 180), ypos + rad * -sin(ang * PI / 180), xMag, yMag));
