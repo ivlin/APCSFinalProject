@@ -38,10 +38,10 @@ void setup() {
     windDirection = 0;
     bulletType = new ButtonArray(10, 0, 0, width - 185, 65);
     //Make the bulletType buttons
-   for (int x = 0; x < bulletType.size(); x ++) {
+    for (int x = 0; x < bulletType.size (); x ++) {
       bulletType.setButton(x, "");
     }
-    
+
     bulletType.setButton(0, "Bullet");
     bulletType.setButton(1, "Big\nBullet");
     bulletType.setButton(2, "Rolling\nBullet");
@@ -89,6 +89,10 @@ void draw() {
           a.correction();
           a.stamp();
         }
+      }
+      for (int i = mines.size () - 1; i >= 0; i--) {
+        mines.get(i).detect();
+        mines.get(i).stamp();
       }
       for (int i = bullets.size () - 1; i >= 0; i--) {
         bullets.get(i).fall();
@@ -151,10 +155,10 @@ void keyPressed() {
             turn = 0;
             newWind = -9 + rand.nextInt(19);
           }
-         for (int i = 0; i < bulletType.size (); i++) {
+          for (int i = 0; i < bulletType.size (); i++) {
             bulletType.array[i].isSelected = false;
           }
-          
+
           bulletType.selection = tanks.get(turn).bulletSelected;
           bulletType.array[bulletType.selection].isSelected = true;
         }

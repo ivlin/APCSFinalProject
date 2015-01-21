@@ -28,19 +28,7 @@ class Bullet extends Thing {
       detonate(15);
       ypos = height + 1;
     }
-    for (Tank b : tanks) {
-      if (ff.selection == 0) {
-        if (getDist(b) < b.rad) {
-          detonate(15);
-          ypos = height + 1;
-        }
-      } else {
-        if (b.team != team && getDist(b) < b.rad) {
-          detonate(15);
-          ypos = height + 1;
-        }
-      }
-    }
+    detect ();
   }
 
   void detonate(float rad) {
@@ -75,6 +63,22 @@ class Bullet extends Thing {
         }
       }
       bullets.remove(x);
+    }
+  }
+
+  void detect () {
+    for (Tank b : tanks) {
+      if (ff.selection == 0) {
+        if (getDist(b) < b.rad) {
+          detonate(15);
+          ypos = height + 1;
+        }
+      } else {
+        if (b.team != team && getDist(b) < b.rad) {
+          detonate(15);
+          ypos = height + 1;
+        }
+      }
     }
   }
 }
