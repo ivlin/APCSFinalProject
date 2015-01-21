@@ -24,6 +24,7 @@ class Tank extends Thing {
     inv[6] = 3;
     inv[7] = 10;
     inv[8] = 3;
+    inv[9] = 3;
   }
 
   //Keeps within screen boundaries, applies gravity

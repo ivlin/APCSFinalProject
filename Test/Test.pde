@@ -4,6 +4,7 @@ import static java.lang.Math.*;
 ArrayList<Tank> tanks = new ArrayList<Tank>();
 ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 ArrayList<Thing> top = new ArrayList<Thing>();
+ArrayList<MineBullet> mines = new ArrayList<MineBullet>();
 ButtonArray playerNums, gameMode, bulletType, ff, wind;
 Button start, popup;
 int turn, players, teams, windDirection, newWind;
