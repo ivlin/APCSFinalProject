@@ -37,6 +37,5 @@ class TeleportBullet extends Bullet {
       }
     }
   }
-  
 }
 

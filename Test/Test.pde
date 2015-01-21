@@ -85,6 +85,7 @@ void draw() {
         Tank a = tanks.get(i);
         if (a.hp <= 0) {
           tanks.remove(i);
+          turn = (turn - 1) % tanks.size();
         } else {
           a.correction();
           a.stamp();
@@ -228,7 +229,7 @@ void terrain() {
   stroke(#000000);
   rect(width - 180, 0, 175, 65, 7);
   if (popupOneVis) {
-    fill(#222222, 50);
+    fill(#FF0000);
   }
   rect(width - 25, 66, 20, 20, 3);
   fill(#FF0000, 200);
