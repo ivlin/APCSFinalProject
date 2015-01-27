@@ -2,6 +2,7 @@ APCSFinalProject
 ================
 
 Tanks: Tank game, with tanks that fire bullets at each other.
+Note: PDE files are in the TEST folder.
 
 <h1> Developmental Stage </h1><br>
 Dec 26th - Terrain is drawn, but can't be interacted with.<br>
